@@ -4,6 +4,8 @@
 # rdantic
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/eodaGmbH/rdantic/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/eodaGmbH/rdantic/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of rdantic is to add type safety to your R code.

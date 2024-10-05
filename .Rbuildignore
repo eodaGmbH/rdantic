@@ -4,3 +4,4 @@
 examples/
 _NAMESPACE
 ^README\.Rmd$
+^\.github$
