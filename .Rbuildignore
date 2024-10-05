@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 examples/
 _NAMESPACE
+^README\.Rmd$

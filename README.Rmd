@@ -1,0 +1,92 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rdantic
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of rdantic is to add type safety to your R code.
+
+## Installation
+
+You can install the development version of rdantic from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("eodaGmbH/rdantic")
+```
+
+## Example
+
+```{r example}
+library(rdantic)
+
+numbers <- base_model(
+  a = is.numeric,
+  b = is.numeric
+)
+
+numbers(a = 2, b = 4)
+
+try(
+  numbers(a = 2, b = "Hi")
+)
+
+# Use type checking inside your functiony
+add_two_numbers <- function(a, b) {
+  params <- numbers(environment())
+  params$a + params$b
+}
+
+add_two_numbers(2, 4)
+
+try(
+  add_two_numbers(2, "4")
+)
+
+numbers <- base_model(
+  a = is.numeric,
+  b = function(x) is.numeric(x) & x != 0
+)
+
+devide_two_numbers <- function(a, b) {
+  params <- numbers(environment())
+  params$a / params$b
+}
+
+devide_two_numbers(4, 2)
+
+try(
+  devide_two_numbers(4, 0)
+)
+
+# Add validators
+
+numbers_with_validator <- base_model(
+  a = is.numeric,
+  b = is.numeric,
+  .validators = list(
+    b = function(x) ifelse(x == 0, 1, x)
+  )
+)
+
+devide_two_numbers_set_0_to_1 <- function(a, b) {
+  params <- numbers_with_validator(environment())
+  params$a / params$b
+}
+
+devide_two_numbers_set_0_to_1(4, 0)
+```
