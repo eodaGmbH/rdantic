@@ -46,7 +46,8 @@ try(
 
 ``` r
 
-# Use type checking inside your functiony
+# Use type checking inside your functions
+
 add_two_numbers <- function(a, b) {
   params <- numbers(environment())
   params$a + params$b
