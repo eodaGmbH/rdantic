@@ -18,7 +18,7 @@ You can install the development version of rdantic from
 devtools::install_github("eodaGmbH/rdantic")
 ```
 
-## Example
+## Examples
 
 ``` r
 library(rdantic)
@@ -108,4 +108,30 @@ devide_two_numbers_set_0_to_1 <- function(a, b) {
 
 devide_two_numbers_set_0_to_1(4, 0)
 #> [1] 4
+```
+
+``` r
+
+# Get settings from env vars
+
+Sys.setenv(POSTGRES_USERNAME = "postgres")
+Sys.setenv(POSTGRES_PASSWORD = "superSecret!")
+Sys.setenv(POSTGRES_PORT = 15432)
+
+postgres_settings <- base_settings(
+  username = as.character,
+  password = as.character,
+  port = as.numeric,
+  .prefix = "POSTGRES"
+)
+
+postgres_settings()
+#> $username
+#> [1] "postgres"
+#> 
+#> $password
+#> [1] "superSecret!"
+#> 
+#> $port
+#> [1] 15432
 ```
