@@ -1,9 +1,15 @@
 check_types <- function(types, validators = NULL) {
-  function(.obj = list(), ..., .drop_null = TRUE) {
-    if (is.environment(.obj)) .obj <- as.list(.obj)
+  function(.obj = list(), ..., .drop_null = TRUE, .force_list = FALSE) {
+    # Convert environment into list
+    if (isTRUE(.force_list)) .obj <- as.list(.obj)
 
-    .obj <- utils::modifyList(.obj, list(...))
+    if (is.list(.obj)) {
+      .obj <- utils::modifyList(.obj, list(...))
+    }
 
+    # if (length(.obj) == 0) .obj <- rlang::caller_env()
+
+    # TODO: Rename to 'validators_before'
     if (!is.null(validators)) {
       for (k in names(validators)) {
         .obj[[k]] <- validators[[k]](.obj[[k]])
@@ -19,7 +25,7 @@ check_types <- function(types, validators = NULL) {
         }
       }
     }
-    if (isTRUE(.drop_null)) return(purrr::compact(.obj))
+    if (is.list(.obj) & isTRUE(.drop_null)) return(purrr::compact(.obj))
     return(.obj)
   }
 }

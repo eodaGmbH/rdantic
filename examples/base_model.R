@@ -16,7 +16,7 @@ x <- list(
 my_model(x)
 
 f <- function(a, b, txt) {
-  args <- my_model(environment())
+  args <- my_model(environment(), .force_list = FALSE)
   return(args)
 }
 
