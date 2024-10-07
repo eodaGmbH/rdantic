@@ -4,7 +4,7 @@ check_types <- function(types, validators = NULL) {
     if (isTRUE(.force_list)) .obj <- as.list(.obj)
 
     if (is.list(.obj)) {
-      .obj <- utils::modifyList(.obj, list(...))
+      .obj <- utils::modifyList(.obj, list(...), keep.null = TRUE)
     }
 
     # if (length(.obj) == 0) .obj <- rlang::caller_env()

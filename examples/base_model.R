@@ -10,10 +10,11 @@ my_model <- base_model(
 x <- list(
   a = 10,
   b = "20",
-  txt = "yes"
+  txt = NULL
 )
 
-my_model(x)
+my_model(x, .drop_null = FALSE)
+my_model(a = 10, b = 20, txt = NULL, .drop_null = FALSE)
 
 f <- function(a, b, txt) {
   args <- my_model(environment(), .force_list = FALSE)
