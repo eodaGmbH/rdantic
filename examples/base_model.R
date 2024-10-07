@@ -1,7 +1,9 @@
+library(rlang)
+
 my_model <- base_model(
   a = is.numeric,
   b = is.numeric,
-  txt = is.character,
+  txt = is_optional(rlang::is_scalar_character),
   .validators = list(
     b = function(x) as.numeric(x) * 20
   )
@@ -14,7 +16,7 @@ x <- list(
 )
 
 my_model(x, .drop_null = FALSE)
-my_model(a = 10, b = 20, txt = NULL, .drop_null = FALSE)
+my_model(a = 10, b = 20, txt = c("Hi", "guys"), .drop_null = FALSE)
 
 f <- function(a, b, txt) {
   args <- my_model(environment(), .force_list = FALSE)

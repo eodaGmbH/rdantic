@@ -19,13 +19,15 @@ check_types <- function(types, validators = NULL) {
     for (k in names(.obj)) {
       type_check <- types[[k]]
       value <- .obj[[k]]
-      if (!is.null(value)) {
-        if (!type_check(value)) {
-          stop("Value of '", k, "' (\"", value, "\") failed test: ", deparse(substitute(type_check)), call. = FALSE)
-        }
+      if (!type_check(value)) {
+        stop("Value of '", k, "' (\"", value, "\") failed test: ", deparse(substitute(type_check)), call. = FALSE)
       }
     }
-    if (is.list(.obj) & isTRUE(.drop_null)) return(purrr::compact(.obj))
+
+    if (is.list(.obj) & isTRUE(.drop_null)) {
+      return(purrr::compact(.obj))
+    }
+
     return(.obj)
   }
 }
