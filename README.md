@@ -26,13 +26,14 @@ devtools::install_github("eodaGmbH/rdantic")
 
 ``` r
 library(rdantic)
+library(rlang)
 
 numbers <- base_model(
-  a = is.numeric,
-  b = is.numeric
+  a = is_integer,
+  b = is_integer
 )
 
-numbers(a = 2, b = 4)
+numbers(a = 2L, b = 4L)
 #> $a
 #> [1] 2
 #> 
@@ -43,18 +44,18 @@ numbers(a = 2, b = 4)
 ``` r
 
 try(
-  numbers(a = 2, b = "Hi")
+  numbers(a = 2L, b = 4.5)
 )
-#> Error : Value of 'b' ("Hi") failed test: .Primitive("is.numeric")
+#> Error : Value of 'b' ("4.5") failed test: function (x, n = NULL) {    .Call(ffi_is_integer, x, n)}
 ```
 
 ``` r
 
 my_model <- base_model(
-  convert_me_to_camel_case = is.character,
-  a = is_optional(is.integer),
-  b = is.integer,
-  txt = is.character
+  convert_me_to_camel_case = is_scalar_character,
+  a = is_optional(is_integer),
+  b = is_integer,
+  txt = is_scalar_character
 )
 
 (m <- my_model(convert_me_to_camel_case = "okay", b = 10L, txt = "Hi"))
