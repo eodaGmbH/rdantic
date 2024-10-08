@@ -22,6 +22,8 @@ devtools::install_github("eodaGmbH/rdantic")
 
 ## Examples
 
+### Models
+
 ``` r
 library(rdantic)
 
@@ -48,6 +50,55 @@ try(
 
 ``` r
 
+my_model <- base_model(
+  convert_me_to_camel_case = is.character,
+  a = is_optional(is.integer),
+  b = is.integer,
+  txt = is.character 
+)
+
+(m <- my_model(convert_me_to_camel_case = "okay", b = 10L, txt = "Hi"))
+#> $convert_me_to_camel_case
+#> [1] "okay"
+#> 
+#> $b
+#> [1] 10
+#> 
+#> $txt
+#> [1] "Hi"
+#> 
+#> $a
+#> NULL
+```
+
+``` r
+
+m |>
+  model_dump(exclude_null = TRUE, camels = TRUE)
+#> $convertMeToCamelCase
+#> [1] "okay"
+#> 
+#> $b
+#> [1] 10
+#> 
+#> $txt
+#> [1] "Hi"
+```
+
+``` r
+
+m |>
+  model_dump(include = c("a", "b"))
+#> $b
+#> [1] 10
+#> 
+#> $a
+#> NULL
+```
+
+### Type safety in functions
+
+``` r
 # Use type checking inside your functions
 
 add_two_numbers <- function(a, b) {
@@ -110,10 +161,9 @@ devide_two_numbers_set_0_to_1(4, 0)
 #> [1] 4
 ```
 
+### Get settings from env vars
+
 ``` r
-
-# Get settings from env vars
-
 Sys.setenv(POSTGRES_USERNAME = "postgres")
 Sys.setenv(POSTGRES_PASSWORD = "superSecret!")
 Sys.setenv(POSTGRES_PORT = 15432)
