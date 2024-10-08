@@ -1,5 +1,5 @@
 check_types <- function(types, validators = NULL) {
-  function(.obj = list(), ..., .drop_null = TRUE, .force_list = FALSE) {
+  function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
     # Convert environment into list
     if (isTRUE(.force_list)) .obj <- as.list(.obj)
 
@@ -16,7 +16,9 @@ check_types <- function(types, validators = NULL) {
       }
     }
 
-    for (k in names(.obj)) {
+    # for (k in names(.obj)) {
+    for (k in names(types)) {
+      if (!k %in% names(.obj)) .obj[k] <- list(NULL)
       type_check <- rlang::as_function(types[[k]])
       value <- .obj[[k]]
       # testthat::expect_true(type_check(value)) |>
@@ -47,6 +49,31 @@ base_model <- function(..., .validators = NULL) {
   return(check_types(types, .validators))
 }
 
-model_dump <- function(.m, drop_null = TRUE, ...) {
-
+#' Modify a model object
+#' @param .obj model object
+#' @param exclude A set of fields to exclude from the output.
+#' @param include A set of fields to include in the output.
+#' @param exclude_null Whether to drop items with the value `NULL`.
+#' @param exclude_na Whether to drop items with the value `NA`.
+#' @param camels Whether to convert all keys to camel case.
+#' @returns list
+#' @export
+model_dump <- function(.obj,
+                       exclude = NULL,
+                       include = NULL,
+                       exclude_null = FALSE,
+                       exclude_na = FALSE,
+                       camels = FALSE) {
+  if (!is.null(exclude)) .obj <- purrr::discard_at(.obj, exclude)
+  if (!is.null(include)) .obj <- purrr::keep_at(.obj, include)
+  if (exclude_null) .obj <- purrr::discard(.obj, is.null)
+  if (exclude_na) .obj <- purrr::discard(.obj, is.na)
+  if (camels) .obj <- keys_to_camel_case(.obj)
+  return(.obj)
 }
+
+
+# model_dump_json <- function(.obj, ...) {
+#  model_dump(.obj, ...) |>
+#    jsonlite::toJSON(auto_unbox = TRUE)
+# }
