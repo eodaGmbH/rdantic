@@ -7,7 +7,7 @@ check_types <- function(types, validators = NULL) {
       .obj <- utils::modifyList(.obj, list(...), keep.null = TRUE)
     }
 
-    # if (length(.obj) == 0) .obj <- rlang::caller_env()
+    if (length(.obj) == 0) .obj <- rlang::caller_env()
 
     # TODO: Rename to 'validators_before'
     if (!is.null(validators)) {
@@ -17,7 +17,7 @@ check_types <- function(types, validators = NULL) {
     }
 
     for (k in names(.obj)) {
-      type_check <- types[[k]]
+      type_check <- rlang::as_function(types[[k]])
       value <- .obj[[k]]
       # testthat::expect_true(type_check(value)) |>
       #  testthat::show_failure()
@@ -48,9 +48,5 @@ base_model <- function(..., .validators = NULL) {
 }
 
 model_dump <- function(.m, drop_null = TRUE, ...) {
-
-}
-
-validate_args <- function(...) {
 
 }

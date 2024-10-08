@@ -15,7 +15,7 @@ do.call(f, list(a = 1, b = 0)) # Inf
 
 # Use model inside function
 f <- function(a, b) {
-  params = my_model(environment())
+  params <- my_model(environment())
   params$a / params$b
 }
 
