@@ -19,10 +19,14 @@ check_types <- function(types, validators = NULL) {
     for (k in names(.obj)) {
       type_check <- types[[k]]
       value <- .obj[[k]]
+      # testthat::expect_true(type_check(value)) |>
+      #  testthat::show_failure()
       if (!type_check(value)) {
         stop("Value of '", k, "' (\"", value, "\") failed test: ", deparse(substitute(type_check)), call. = FALSE)
       }
     }
+
+    if (is.environment(.obj)) invisible(.obj)
 
     if (is.list(.obj) & isTRUE(.drop_null)) {
       return(purrr::compact(.obj))
@@ -44,5 +48,9 @@ base_model <- function(..., .validators = NULL) {
 }
 
 model_dump <- function(.m, drop_null = TRUE, ...) {
+
+}
+
+validate_args <- function(...) {
 
 }

@@ -4,6 +4,7 @@ my_model <- base_model(
   a = is.numeric,
   b = is.numeric,
   txt = is_optional(rlang::is_scalar_character),
+  # txt = function(x) rlang::is_scalar_character(x) | is.null(x),
   .validators = list(
     b = function(x) as.numeric(x) * 20
   )
