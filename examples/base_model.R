@@ -1,7 +1,10 @@
+library(rlang)
+
 my_model <- base_model(
   a = is.numeric,
   b = is.numeric,
-  txt = is.character,
+  # txt = is_optional(rlang::is_scalar_character),
+  txt = ~ rlang::is_scalar_character(.x) | is.null(.x),
   .validators = list(
     b = function(x) as.numeric(x) * 20
   )
@@ -10,13 +13,14 @@ my_model <- base_model(
 x <- list(
   a = 10,
   b = "20",
-  txt = "yes"
+  txt = NULL
 )
 
-my_model(x)
+my_model(x, .drop_null = FALSE)
+my_model(a = 10, b = 20, txt = c("Hi", "guys"), .drop_null = FALSE)
 
 f <- function(a, b, txt) {
-  args <- my_model(environment())
+  args <- my_model(environment(), .force_list = FALSE)
   return(args)
 }
 
@@ -33,3 +37,15 @@ another_model(
   list(a = NULL, b = 10, txt = "Hello"),
   .drop_null = TRUE
 )
+
+f2 <- function(a, b, y = NULL) {
+  validate_args(
+    a = is.numeric,
+    b = is.numeric,
+    y = is_optional(is.numeric)
+  )
+  a + b
+}
+
+f2(10, 4)
+f2(10, 4, "Hi")
