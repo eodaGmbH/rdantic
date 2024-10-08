@@ -54,7 +54,7 @@ my_model <- base_model(
   convert_me_to_camel_case = is.character,
   a = is_optional(is.integer),
   b = is.integer,
-  txt = is.character 
+  txt = is.character
 )
 
 (m <- my_model(convert_me_to_camel_case = "okay", b = 10L, txt = "Hi"))

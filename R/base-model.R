@@ -49,9 +49,10 @@ base_model <- function(..., .validators = NULL) {
   return(check_types(types, .validators))
 }
 
-#' Modify the model representation
+#' Modify a model object
+#' @param .obj model object
 #' @param exclude A set of fields to exclude from the output.
-#' @param incluse A set of fields to include in the output.
+#' @param include A set of fields to include in the output.
 #' @param exclude_null Whether to drop items with the value `NULL`.
 #' @param exclude_na Whether to drop items with the value `NA`.
 #' @param camels Whether to convert all keys to camel case.
@@ -72,7 +73,7 @@ model_dump <- function(.obj,
 }
 
 
-model_dump_json <- function(.obj, ...) {
-  model_dump(.obj, ...) |>
-    jsonlite::toJSON(auto_unbox = TRUE)
-}
+# model_dump_json <- function(.obj, ...) {
+#  model_dump(.obj, ...) |>
+#    jsonlite::toJSON(auto_unbox = TRUE)
+# }

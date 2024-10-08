@@ -2,7 +2,7 @@
 % Please edit documentation in R/base-model.R
 \name{model_dump}
 \alias{model_dump}
-\title{Modify the model representation}
+\title{Modify a model object}
 \usage{
 model_dump(
   .obj,
@@ -14,19 +14,21 @@ model_dump(
 )
 }
 \arguments{
+\item{.obj}{model object}
+
 \item{exclude}{A set of fields to exclude from the output.}
+
+\item{include}{A set of fields to include in the output.}
 
 \item{exclude_null}{Whether to drop items with the value `NULL`.}
 
 \item{exclude_na}{Whether to drop items with the value `NA`.}
 
 \item{camels}{Whether to convert all keys to camel case.}
-
-\item{incluse}{A set of fields to include in the output.}
 }
 \value{
 list
 }
 \description{
-Modify the model representation
+Modify a model object
 }
