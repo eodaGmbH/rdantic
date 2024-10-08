@@ -9,6 +9,8 @@ is_optional <- function(.f) {
 is_optional2 <- function(.f) set_attributes(.f, optional = TRUE)
 
 # ---
+#' Validate args inside function
+#' @inherit base_model params return
 #' @export
 validate_args <- function(..., .validators = NULL) {
   base_model(..., .validators = .validators)(rlang::caller_env())
