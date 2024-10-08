@@ -42,3 +42,7 @@ base_model <- function(..., .validators = NULL) {
   types <- list(...)
   return(check_types(types, .validators))
 }
+
+model_dump <- function(.m, drop_null = TRUE, ...) {
+
+}
