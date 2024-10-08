@@ -9,6 +9,7 @@ is_optional <- function(.f) {
 is_optional2 <- function(.f) set_attributes(.f, optional = TRUE)
 
 # ---
-validate_args <- function(...) {
-  base_model(...)(rlang::caller_env())
+#' @export
+validate_args <- function(..., .validators = NULL) {
+  base_model(..., .validators = .validators)(rlang::caller_env())
 }

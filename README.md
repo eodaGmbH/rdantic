@@ -51,8 +51,8 @@ try(
 # Use type checking inside your functions
 
 add_two_numbers <- function(a, b) {
-  params <- numbers(environment())
-  params$a + params$b
+  validate_args(a = is.numeric, b = is.numeric)
+  a + b
 }
 
 add_two_numbers(2, 4)
@@ -69,14 +69,12 @@ try(
 
 ``` r
 
-numbers <- base_model(
-  a = is.numeric,
-  b = function(x) is.numeric(x) & x != 0
-)
-
 devide_two_numbers <- function(a, b) {
-  params <- numbers(environment())
-  params$a / params$b
+  validate_args(
+    a = is.numeric,
+    b = ~ is.numeric(.x) & .x != 0
+  )
+  a / b
 }
 
 devide_two_numbers(4, 2)
@@ -88,7 +86,7 @@ devide_two_numbers(4, 2)
 try(
   devide_two_numbers(4, 0)
 )
-#> Error : Value of 'b' ("0") failed test: function (x) is.numeric(x) & x != 0
+#> Error : Value of 'b' ("0") failed test: structure(function (..., .x = ..1, .y = ..2, . = ..1) is.numeric(.x) & .x != 0, class = c("rlang_lambda_function", "function"))
 ```
 
 ``` r
@@ -123,7 +121,7 @@ Sys.setenv(POSTGRES_PORT = 15432)
 postgres_settings <- base_settings(
   username = as.character,
   password = as.character,
-  port = as.numeric,
+  port = as.integer,
   .prefix = "POSTGRES"
 )
 
