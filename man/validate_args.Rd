@@ -7,9 +7,7 @@
 validate_args(..., .validators = NULL)
 }
 \arguments{
-\item{...}{model parameters and their type testers}
-
-\item{.validators}{list of validators}
+\item{...}{model parameters and their type-check functions}
 }
 \value{
 model function

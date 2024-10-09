@@ -8,9 +8,9 @@ raise_type_check_error <- function(key, value, f_type_check) {
   cli::cli_abort(
     c(
       "Type check failed.",
-      "field: {key}",
-      "value: {value_text}",
-      "test: {f_text}"
+      i = "field: {key}",
+      x = "value: {value_text}",
+      x = "test: {f_text}"
     )
   )
 }
