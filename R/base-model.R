@@ -1,3 +1,20 @@
+raise_type_check_error <- function(key, value, f_type_check) {
+  value_text <- rlang::quo_text(value)
+  f_text <- ifelse(
+    rlang::is_primitive(f_type_check),
+    rlang::prim_name(f_type_check),
+    rlang::quo_text(f_type_check)
+  )
+  cli::cli_abort(
+    c(
+      "Type check failed.",
+      "field: {key}",
+      "value: {value_text}",
+      "test: {f_text}"
+    )
+  )
+}
+
 validate_model_values <- function(.obj, validators) {
   for (k in names(validators)) {
     .obj[[k]] <- validators[[k]](.obj[[k]])
@@ -27,10 +44,9 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
       if (!k %in% names(.obj)) .obj[k] <- list(NULL)
       type_check <- rlang::as_function(types[[k]])
       value <- .obj[[k]]
-      # testthat::expect_true(type_check(value)) |>
-      #  testthat::show_failure()
       if (!type_check(value)) {
-        stop("Value of '", k, "' (\"", value, "\") failed test: ", deparse(substitute(type_check)), call. = FALSE)
+        raise_type_check_error(k, value, type_check)
+        # stop("Value of '", k, "' ", rlang::quo_text(value), " failed test: ", deparse(substitute(type_check)), call. = FALSE)
       }
     }
 
