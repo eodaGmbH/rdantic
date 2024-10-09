@@ -1,12 +1,14 @@
 validate_model_values <- function(.obj, validators) {
-for (k in names(validators)) {
-  .obj[[k]] <- validators[[k]](.obj[[k]])
-}
+  for (k in names(validators)) {
+    .obj[[k]] <- validators[[k]](.obj[[k]])
+  }
+
   return(.obj)
 }
 
 check_types <- function(types, validators_before = NULL, validators_after = NULL) {
   function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
+
     # Convert environment into list
     if (isTRUE(.force_list)) .obj <- as.list(.obj)
 
