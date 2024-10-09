@@ -1,4 +1,11 @@
-check_types <- function(types, validators = NULL) {
+validate_model_values <- function(.obj, validators) {
+for (k in names(validators)) {
+  .obj[[k]] <- validators[[k]](.obj[[k]])
+}
+  return(.obj)
+}
+
+check_types <- function(types, validators_before = NULL, validators_after = NULL) {
   function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
     # Convert environment into list
     if (isTRUE(.force_list)) .obj <- as.list(.obj)
@@ -9,11 +16,8 @@ check_types <- function(types, validators = NULL) {
 
     if (length(.obj) == 0) .obj <- rlang::caller_env()
 
-    # TODO: Rename to 'validators_before'
-    if (!is.null(validators)) {
-      for (k in names(validators)) {
-        .obj[[k]] <- validators[[k]](.obj[[k]])
-      }
+    if (!is.null(validators_before)) {
+      .obj <- validate_model_values(.obj, validators_before)
     }
 
     # for (k in names(.obj)) {
@@ -28,6 +32,10 @@ check_types <- function(types, validators = NULL) {
       }
     }
 
+    if (!is.null(validators_after)) {
+      .obj <- validate_model_values(.obj, validators_after)
+    }
+
     if (is.environment(.obj)) invisible(.obj)
 
     if (is.list(.obj) & isTRUE(.drop_null)) {
@@ -39,14 +47,15 @@ check_types <- function(types, validators = NULL) {
 }
 
 #' Create a model
-#' @param ... model parameters and their type testers
-#' @param .validators list of validators
+#' @param ... model parameters and their type-check functions
+#' @param .validators_before list of validators that run before types are checked
+#' @param .validators_after list of validators that run after types are checked
 #' @returns model function
 #' @example examples/api/base-model.R
 #' @export
-base_model <- function(..., .validators = NULL) {
+base_model <- function(..., .validators_before = NULL, .validators_after = NULL) {
   types <- list(...)
-  return(check_types(types, .validators))
+  return(check_types(types, .validators_before, .validators_after))
 }
 
 #' Modify a model object
