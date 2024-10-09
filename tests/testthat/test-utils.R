@@ -4,7 +4,7 @@ test_that("snakes to camels", {
     snake_case = "yes",
     camelCase = "yes",
     isSnakeCase = "no",
-    is_camel_case = "no"
+    is_camel_case = list(more_snakes = "yeah")
   )
 
   # Act
@@ -12,4 +12,5 @@ test_that("snakes to camels", {
 
   # Assert
   expect_equal(names(l_camels), c("snakeCase", "camelCase", "isSnakeCase", "isCamelCase"))
+  expect_equal(l_camels$isCamelCase$moreSnakes, "yeah")
 })
