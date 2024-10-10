@@ -66,13 +66,14 @@
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rdantic</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rlang.r-lib.org" class="external-link">rlang</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">numbers</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/base_model.html">base_model</a></span><span class="op">(</span></span>
-<span>  a <span class="op">=</span> <span class="va">is.numeric</span>,</span>
-<span>  b <span class="op">=</span> <span class="va">is.numeric</span></span>
+<span>  a <span class="op">=</span> <span class="va">is_integer</span>,</span>
+<span>  b <span class="op">=</span> <span class="va">is_integer</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">numbers</span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu">numbers</span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2L</span>, b <span class="op">=</span> <span class="fl">4L</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $a</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -81,16 +82,20 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span></span>
-<span>  <span class="fu">numbers</span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="st">"Hi"</span><span class="op">)</span></span>
+<span>  <span class="fu">numbers</span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2L</span>, b <span class="op">=</span> <span class="fl">4.5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error : Value of 'b' ("Hi") failed test: .Primitive("is.numeric")</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in raise_type_check_error(k, value, type_check) : </span></span>
+<span><span class="co">#&gt;   Type check failed.</span></span>
+<span><span class="co">#&gt; ℹ field: b</span></span>
+<span><span class="co">#&gt; ✖ value: 4.5</span></span>
+<span><span class="co">#&gt; ✖ test: function (x, n = NULL) { .Call(ffi_is_integer, x, n) }</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">my_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/base_model.html">base_model</a></span><span class="op">(</span></span>
-<span>  convert_me_to_camel_case <span class="op">=</span> <span class="va">is.character</span>,</span>
-<span>  a <span class="op">=</span> <span class="fu"><a href="reference/is_optional.html">is_optional</a></span><span class="op">(</span><span class="va">is.integer</span><span class="op">)</span>,</span>
-<span>  b <span class="op">=</span> <span class="va">is.integer</span>,</span>
-<span>  txt <span class="op">=</span> <span class="va">is.character</span></span>
+<span>  convert_me_to_camel_case <span class="op">=</span> <span class="va">is_scalar_character</span>,</span>
+<span>  a <span class="op">=</span> <span class="fu"><a href="reference/is_optional.html">is_optional</a></span><span class="op">(</span><span class="va">is_integer</span><span class="op">)</span>,</span>
+<span>  b <span class="op">=</span> <span class="va">is_integer</span>,</span>
+<span>  txt <span class="op">=</span> <span class="va">is_scalar_character</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">my_model</span><span class="op">(</span>convert_me_to_camel_case <span class="op">=</span> <span class="st">"okay"</span>, b <span class="op">=</span> <span class="fl">10L</span>, txt <span class="op">=</span> <span class="st">"Hi"</span><span class="op">)</span><span class="op">)</span></span>
@@ -134,7 +139,7 @@
 <code class="sourceCode R"><span><span class="co"># Use type checking inside your functions</span></span>
 <span></span>
 <span><span class="va">add_two_numbers</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="reference/validate_args.html">validate_args</a></span><span class="op">(</span>a <span class="op">=</span> <span class="va">is.numeric</span>, b <span class="op">=</span> <span class="va">is.numeric</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/validate_args.html">validate_args</a></span><span class="op">(</span>a <span class="op">=</span> <span class="va">is_scalar_double</span>, b <span class="op">=</span> <span class="va">is_scalar_double</span><span class="op">)</span></span>
 <span>  <span class="va">a</span> <span class="op">+</span> <span class="va">b</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -143,15 +148,19 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span></span>
-<span>  <span class="fu">add_two_numbers</span><span class="op">(</span><span class="fl">2</span>, <span class="st">"4"</span><span class="op">)</span></span>
+<span>  <span class="fu">add_two_numbers</span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error : Value of 'b' ("4") failed test: .Primitive("is.numeric")</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in raise_type_check_error(k, value, type_check) : </span></span>
+<span><span class="co">#&gt;   Type check failed.</span></span>
+<span><span class="co">#&gt; ℹ field: b</span></span>
+<span><span class="co">#&gt; ✖ value: c(2, 4)</span></span>
+<span><span class="co">#&gt; ✖ test: function (x) { .Call(ffi_is_double, x, 1L, NULL) }</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">devide_two_numbers</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="reference/validate_args.html">validate_args</a></span><span class="op">(</span></span>
-<span>    a <span class="op">=</span> <span class="va">is.numeric</span>,</span>
-<span>    b <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">.x</span> <span class="op">!=</span> <span class="fl">0</span></span>
+<span>    a <span class="op">=</span> <span class="va">is_double</span>,</span>
+<span>    b <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/type-predicates.html" class="external-link">is_double</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">.x</span> <span class="op">!=</span> <span class="fl">0</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">a</span> <span class="op">/</span> <span class="va">b</span></span>
 <span><span class="op">}</span></span>
@@ -163,25 +172,28 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span></span>
 <span>  <span class="fu">devide_two_numbers</span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error : Value of 'b' ("0") failed test: structure(function (..., .x = ..1, .y = ..2, . = ..1) is.numeric(.x) &amp; .x != 0, class = c("rlang_lambda_function", "function"))</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in raise_type_check_error(k, value, type_check) : </span></span>
+<span><span class="co">#&gt;   Type check failed.</span></span>
+<span><span class="co">#&gt; ℹ field: b</span></span>
+<span><span class="co">#&gt; ✖ value: 0</span></span>
+<span><span class="co">#&gt; ✖ test: structure(function (..., .x = ..1, .y = ..2, . = ..1) is_double(.x) &amp;</span></span>
+<span><span class="co">#&gt;   .x != 0, class = c("rlang_lambda_function", "function" ))</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Add validators</span></span>
 <span></span>
-<span><span class="va">numbers_with_validator</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/base_model.html">base_model</a></span><span class="op">(</span></span>
-<span>  a <span class="op">=</span> <span class="va">is.numeric</span>,</span>
-<span>  b <span class="op">=</span> <span class="va">is.numeric</span>,</span>
-<span>  .validators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    b <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">devide_two_numbers</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="reference/validate_args.html">validate_args</a></span><span class="op">(</span></span>
+<span>    a <span class="op">=</span> <span class="va">is_double</span>,</span>
+<span>    b <span class="op">=</span> <span class="va">is_double</span>,</span>
+<span>    .validators_after <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      b <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">.x</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="va">.x</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">devide_two_numbers_set_0_to_1</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">numbers_with_validator</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">params</span><span class="op">$</span><span class="va">a</span> <span class="op">/</span> <span class="va">params</span><span class="op">$</span><span class="va">b</span></span>
+<span>  <span class="va">a</span> <span class="op">/</span> <span class="va">b</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu">devide_two_numbers_set_0_to_1</span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu">devide_two_numbers</span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -208,6 +220,16 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $port</span></span>
 <span><span class="co">#&gt; [1] 15432</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>POSTGRES_PORT <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">postgres_settings</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in raise_type_check_error(env_var_name, .obj[[k]], as_type) : </span></span>
+<span><span class="co">#&gt;   Type check failed.</span></span>
+<span><span class="co">#&gt; ℹ field: POSTGRES_PORT</span></span>
+<span><span class="co">#&gt; ✖ value: NA_integer_</span></span>
+<span><span class="co">#&gt; ✖ test: as.integer</span></span></code></pre></div>
 </div>
 </div>
 </div>

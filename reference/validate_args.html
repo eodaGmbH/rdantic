@@ -37,7 +37,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validate_args</span><span class="op">(</span><span class="va">...</span>, .validators <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validate_args</span><span class="op">(</span><span class="va">...</span>, .validators_before <span class="op">=</span> <span class="cn">NULL</span>, .validators_after <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -45,11 +45,15 @@
 
 
 <dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>model parameters and their type testers</p></dd>
+<dd><p>model parameters and their type-check functions</p></dd>
 
 
-<dt id="arg--validators">.validators<a class="anchor" aria-label="anchor" href="#arg--validators"></a></dt>
-<dd><p>list of validators</p></dd>
+<dt id="arg--validators-before">.validators_before<a class="anchor" aria-label="anchor" href="#arg--validators-before"></a></dt>
+<dd><p>list of validators that run before types are checked</p></dd>
+
+
+<dt id="arg--validators-after">.validators_after<a class="anchor" aria-label="anchor" href="#arg--validators-after"></a></dt>
+<dd><p>list of validators that run after types are checked</p></dd>
 
 </dl></div>
     <div class="section level2">
