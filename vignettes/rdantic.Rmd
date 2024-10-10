@@ -1,0 +1,71 @@
+---
+title: "rdantic"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rdantic}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(rdantic)
+library(rlang)
+```
+
+## Models
+
+```{r}
+person <- base_model(
+  name = is_scalar_character,
+  age = is_scalar_integer
+)
+
+person(
+  name = "Lee",
+  age = 100L
+)
+
+try(person(name = "Lee", age = 100))
+```
+
+## Validators
+
+```{r}
+person <- base_model(
+  name = is_scalar_character,
+  age = is_scalar_integer,
+  .validators_before = list(
+    age = as.integer
+  )
+)
+
+person(name = "Lee", age = 100)
+```
+
+## Models inside models
+
+```{r}
+address <- base_model(
+  city = is_scalar_character,
+  country = is_scalar_character
+)
+
+person <- base_model(
+  name = is_scalar_character,
+  age = is_scalar_integer,
+  address = is_another_model(address)
+)
+
+person(
+  name = "Peter",
+  age = 12L,
+  address = address(city = "Kassel", country = "Germany")
+)
+```

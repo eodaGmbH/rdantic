@@ -2,7 +2,7 @@
 
 export(base_model)
 export(base_settings)
+export(is_another_model)
 export(is_optional)
-export(is_sub_model)
 export(model_dump)
 export(validate_args)

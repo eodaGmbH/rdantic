@@ -11,11 +11,11 @@ is_optional <- function(.f) {
 
 is_optional2 <- function(.f) set_attributes(.f, optional = TRUE)
 
-#' Check sub model
-#' @param sub_model sub model
+#' Check another model inside a model
+#' @param .model model to check
 #' @export
-is_sub_model <- function(sub_model) {
-  function(x) is.list(sub_model(x))
+is_another_model <- function(.model) {
+  function(x) is.list(.model(x))
 }
 
 # ---
