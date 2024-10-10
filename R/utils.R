@@ -42,6 +42,21 @@ camels_to_snakes <- function(strings) {
 }
 
 # TODO: Make it recursive
-keys_to_snake_case <- function(x) {
+keys_to_snake_case_DEPRECATED <- function(x) {
   stats::setNames(x, camels_to_snakes(names(x)))
+}
+
+keys_to_snake_case <- function(x, .recursive = TRUE) {
+  l <- list()
+  for (k in names(x)) {
+    value <- x[[k]]
+    k <- camels_to_snakes(k)
+    if (is.list(value) & isTRUE(.recursive)) {
+      l[[k]] <- keys_to_snake_case(value)
+    } else {
+      l[[k]] <- value
+    }
+  }
+
+  return(l)
 }

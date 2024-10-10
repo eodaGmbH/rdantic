@@ -57,7 +57,7 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
       .obj <- validate_model_values(.obj, validators_after)
     }
 
-    if (is.environment(.obj)) invisible(.obj)
+    if (is.environment(.obj)) return(invisible(.obj))
 
     # Only return defined fields
     .obj <- purrr::keep_at(.obj, names(types))
