@@ -20,26 +20,22 @@ model function
 Create a model
 }
 \examples{
-validators <- list(
-  b = function(x) ifelse(x == 0, 1, x)
-)
-
+# Models
 my_model <- base_model(
-  a = is.numeric,
-  b = is.numeric,
-  .validators = validators
+  a = is.integer,
+  b = is.integer,
+  txt = is.character
 )
 
-f <- function(a, b) a / b
+my_model(a = 1L, b = 2L, txt = "My awesome model")
+try(my_model(a = 1, b = 2L, txt = "My awesome model"))
 
-do.call(f, my_model(a = 1, b = 0)) # 1
-do.call(f, list(a = 1, b = 0)) # Inf
-
-# Use model inside function
+# Validate function args
 f <- function(a, b) {
-  params <- my_model(environment())
-  params$a / params$b
+  validate_args(a = is.numeric, b = is.numeric)
+  a + b
 }
 
-f(1, 0) # 1
+f(4, 5)
+try(f(4, "5"))
 }
