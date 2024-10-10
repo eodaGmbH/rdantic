@@ -2,13 +2,31 @@ to_camel_case <- function(x) {
   gsub("_(\\w?)", "\\U\\1", x, perl = TRUE)
 }
 
-# TODO: Make it recursive
-keys_to_camel_case <- function(x) {
+keys_to_camel_case_DEPRECATED <- function(x) {
   if (is.null(x)) {
     return(x)
   }
 
   stats::setNames(x, to_camel_case(names(x)))
+}
+
+keys_to_camel_case <- function(x, .recursive = TRUE) {
+  if (is.null(x)) {
+    return(x)
+  }
+
+  l <- list()
+  for (k in names(x)) {
+    value <- x[[k]]
+    k <- to_camel_case(k)
+    if (is.list(value) & isTRUE(.recursive)) {
+      l[[k]] <- keys_to_camel_case(value)
+    } else {
+      l[[k]] <- value
+    }
+  }
+
+  return(l)
 }
 
 # ---

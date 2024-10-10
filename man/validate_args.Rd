@@ -4,12 +4,14 @@
 \alias{validate_args}
 \title{Validate args inside function}
 \usage{
-validate_args(..., .validators = NULL)
+validate_args(..., .validators_before = NULL, .validators_after = NULL)
 }
 \arguments{
-\item{...}{model parameters and their type testers}
+\item{...}{model parameters and their type-check functions}
 
-\item{.validators}{list of validators}
+\item{.validators_before}{list of validators that run before types are checked}
+
+\item{.validators_after}{list of validators that run after types are checked}
 }
 \value{
 model function

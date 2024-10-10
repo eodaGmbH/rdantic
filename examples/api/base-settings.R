@@ -5,7 +5,7 @@ Sys.setenv(POSTGRES_PORT = 15432)
 postgres_settings <- base_settings(
   username = as.character,
   password = as.character,
-  port = as.numeric,
+  port = as.integer,
   .prefix = "POSTGRES"
 )
 

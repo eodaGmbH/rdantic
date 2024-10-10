@@ -1,5 +1,31 @@
-check_types <- function(types, validators = NULL) {
+raise_type_check_error <- function(key, value, f_type_check) {
+  value_text <- rlang::quo_text(value)
+  f_text <- ifelse(
+    rlang::is_primitive(f_type_check),
+    rlang::prim_name(f_type_check),
+    rlang::quo_text(f_type_check)
+  )
+  cli::cli_abort(
+    c(
+      "Type check failed.",
+      i = "field: {key}",
+      x = "value: {value_text}",
+      x = "test: {f_text}"
+    )
+  )
+}
+
+validate_model_values <- function(.obj, validators) {
+  for (k in names(validators)) {
+    .obj[[k]] <- rlang::as_function(validators[[k]])(.obj[[k]])
+  }
+
+  return(.obj)
+}
+
+check_types <- function(types, validators_before = NULL, validators_after = NULL) {
   function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
+
     # Convert environment into list
     if (isTRUE(.force_list)) .obj <- as.list(.obj)
 
@@ -9,23 +35,26 @@ check_types <- function(types, validators = NULL) {
 
     if (length(.obj) == 0) .obj <- rlang::caller_env()
 
-    # TODO: Rename to 'validators_before'
-    if (!is.null(validators)) {
-      for (k in names(validators)) {
-        .obj[[k]] <- validators[[k]](.obj[[k]])
-      }
+    if (!is.null(validators_before)) {
+      .obj <- validate_model_values(.obj, validators_before)
     }
 
     # for (k in names(.obj)) {
     for (k in names(types)) {
-      if (!k %in% names(.obj)) .obj[k] <- list(NULL)
+      if (!is.environment(.obj) & !k %in% names(.obj)) {
+        .obj[k] <- list(NULL)
+      }
+
       type_check <- rlang::as_function(types[[k]])
       value <- .obj[[k]]
-      # testthat::expect_true(type_check(value)) |>
-      #  testthat::show_failure()
       if (!type_check(value)) {
-        stop("Value of '", k, "' (\"", value, "\") failed test: ", deparse(substitute(type_check)), call. = FALSE)
+        raise_type_check_error(k, value, type_check)
+        # stop("Value of '", k, "' ", rlang::quo_text(value), " failed test: ", deparse(substitute(type_check)), call. = FALSE)
       }
+    }
+
+    if (!is.null(validators_after)) {
+      .obj <- validate_model_values(.obj, validators_after)
     }
 
     if (is.environment(.obj)) invisible(.obj)
@@ -39,14 +68,15 @@ check_types <- function(types, validators = NULL) {
 }
 
 #' Create a model
-#' @param ... model parameters and their type testers
-#' @param .validators list of validators
+#' @param ... model parameters and their type-check functions
+#' @param .validators_before list of validators that run before types are checked
+#' @param .validators_after list of validators that run after types are checked
 #' @returns model function
 #' @example examples/api/base-model.R
 #' @export
-base_model <- function(..., .validators = NULL) {
+base_model <- function(..., .validators_before = NULL, .validators_after = NULL) {
   types <- list(...)
-  return(check_types(types, .validators))
+  return(check_types(types, .validators_before, .validators_after))
 }
 
 #' Modify a model object

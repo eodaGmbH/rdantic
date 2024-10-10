@@ -26,13 +26,14 @@ devtools::install_github("eodaGmbH/rdantic")
 
 ``` r
 library(rdantic)
+library(rlang)
 
 numbers <- base_model(
-  a = is.numeric,
-  b = is.numeric
+  a = is_integer,
+  b = is_integer
 )
 
-numbers(a = 2, b = 4)
+numbers(a = 2L, b = 4L)
 #> $a
 #> [1] 2
 #> 
@@ -43,18 +44,22 @@ numbers(a = 2, b = 4)
 ``` r
 
 try(
-  numbers(a = 2, b = "Hi")
+  numbers(a = 2L, b = 4.5)
 )
-#> Error : Value of 'b' ("Hi") failed test: .Primitive("is.numeric")
+#> Error in raise_type_check_error(k, value, type_check) : 
+#>   Type check failed.
+#> ℹ field: b
+#> ✖ value: 4.5
+#> ✖ test: function (x, n = NULL) { .Call(ffi_is_integer, x, n) }
 ```
 
 ``` r
 
 my_model <- base_model(
-  convert_me_to_camel_case = is.character,
-  a = is_optional(is.integer),
-  b = is.integer,
-  txt = is.character
+  convert_me_to_camel_case = is_scalar_character,
+  a = is_optional(is_integer),
+  b = is_integer,
+  txt = is_scalar_character
 )
 
 (m <- my_model(convert_me_to_camel_case = "okay", b = 10L, txt = "Hi"))
@@ -102,7 +107,7 @@ m |>
 # Use type checking inside your functions
 
 add_two_numbers <- function(a, b) {
-  validate_args(a = is.numeric, b = is.numeric)
+  validate_args(a = is_scalar_double, b = is_scalar_double)
   a + b
 }
 
@@ -113,17 +118,21 @@ add_two_numbers(2, 4)
 ``` r
 
 try(
-  add_two_numbers(2, "4")
+  add_two_numbers(2, c(2, 4))
 )
-#> Error : Value of 'b' ("4") failed test: .Primitive("is.numeric")
+#> Error in raise_type_check_error(k, value, type_check) : 
+#>   Type check failed.
+#> ℹ field: b
+#> ✖ value: c(2, 4)
+#> ✖ test: function (x) { .Call(ffi_is_double, x, 1L, NULL) }
 ```
 
 ``` r
 
 devide_two_numbers <- function(a, b) {
   validate_args(
-    a = is.numeric,
-    b = ~ is.numeric(.x) & .x != 0
+    a = is_double,
+    b = ~ is_double(.x) & .x != 0
   )
   a / b
 }
@@ -137,27 +146,30 @@ devide_two_numbers(4, 2)
 try(
   devide_two_numbers(4, 0)
 )
-#> Error : Value of 'b' ("0") failed test: structure(function (..., .x = ..1, .y = ..2, . = ..1) is.numeric(.x) & .x != 0, class = c("rlang_lambda_function", "function"))
+#> Error in raise_type_check_error(k, value, type_check) : 
+#>   Type check failed.
+#> ℹ field: b
+#> ✖ value: 0
+#> ✖ test: structure(function (..., .x = ..1, .y = ..2, . = ..1) is_double(.x) &
+#>   .x != 0, class = c("rlang_lambda_function", "function" ))
 ```
 
 ``` r
 
 # Add validators
 
-numbers_with_validator <- base_model(
-  a = is.numeric,
-  b = is.numeric,
-  .validators = list(
-    b = function(x) ifelse(x == 0, 1, x)
+devide_two_numbers <- function(a, b) {
+  validate_args(
+    a = is_double,
+    b = is_double,
+    .validators_after = list(
+      b = ~ ifelse(.x == 0, 1, .x)
+    )
   )
-)
-
-devide_two_numbers_set_0_to_1 <- function(a, b) {
-  params <- numbers_with_validator(environment())
-  params$a / params$b
+  a / b
 }
 
-devide_two_numbers_set_0_to_1(4, 0)
+devide_two_numbers(4, 0)
 #> [1] 4
 ```
 
@@ -184,4 +196,16 @@ postgres_settings()
 #> 
 #> $port
 #> [1] 15432
+```
+
+``` r
+
+Sys.setenv(POSTGRES_PORT = "")
+
+try(postgres_settings())
+#> Error in raise_type_check_error(env_var_name, .obj[[k]], as_type) : 
+#>   Type check failed.
+#> ℹ field: POSTGRES_PORT
+#> ✖ value: NA_integer_
+#> ✖ test: as.integer
 ```
