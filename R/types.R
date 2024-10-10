@@ -11,8 +11,15 @@ is_optional <- function(.f) {
 
 is_optional2 <- function(.f) set_attributes(.f, optional = TRUE)
 
+#' Check another model inside a model
+#' @param .model model to check
+#' @export
+is_another_model <- function(.model) {
+  function(x) is.list(.model(x))
+}
+
 # ---
-#' Validate args inside function
+#' Validate function arguments
 #' @inherit base_model params return
 #' @export
 validate_args <- function(..., .validators_before = NULL, .validators_after = NULL) {
