@@ -45,9 +45,7 @@ numbers <- base_model(
 
 numbers(a = 2L, b = 4L)
 
-try(
-  numbers(a = 2L, b = 4.5)
-)
+try(numbers(a = 2L, b = 4.5))
 
 my_model <- base_model(
   convert_me_to_camel_case = is_scalar_character,
@@ -58,28 +56,25 @@ my_model <- base_model(
 
 (m <- my_model(convert_me_to_camel_case = "okay", b = 10L, txt = "Hi"))
 
-m |>
-  model_dump(exclude_null = TRUE, camels = TRUE)
+m |> model_dump(exclude_null = TRUE, camels = TRUE)
 
-m |>
-  model_dump(include = c("a", "b"))
+m |> model_dump(include = c("a", "b"))
 ```
 
-### Type safety in functions
+### Type safety inside functions
 
 ```{r}
-# Use type checking inside your functions
-
 add_two_numbers <- function(a, b) {
-  validate_args(a = is_scalar_double, b = is_scalar_double)
+  validate_args(
+    a = is_scalar_double,
+    b = is_scalar_double
+  )
   a + b
 }
 
 add_two_numbers(2, 4)
 
-try(
-  add_two_numbers(2, c(2, 4))
-)
+try(add_two_numbers(2, c(2, 4)))
 
 devide_two_numbers <- function(a, b) {
   validate_args(
@@ -91,9 +86,7 @@ devide_two_numbers <- function(a, b) {
 
 devide_two_numbers(4, 2)
 
-try(
-  devide_two_numbers(4, 0)
-)
+try(devide_two_numbers(4, 0))
 
 # Add validators
 

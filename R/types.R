@@ -19,7 +19,7 @@ is_another_model <- function(.model) {
 }
 
 # ---
-#' Validate args inside function
+#' Validate function arguments
 #' @inherit base_model params return
 #' @export
 validate_args <- function(..., .validators_before = NULL, .validators_after = NULL) {

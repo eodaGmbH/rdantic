@@ -43,9 +43,7 @@ numbers(a = 2L, b = 4L)
 
 ``` r
 
-try(
-  numbers(a = 2L, b = 4.5)
-)
+try(numbers(a = 2L, b = 4.5))
 #> Error in raise_type_check_error(k, value, type_check) : 
 #>   Type check failed.
 #> ℹ field: b
@@ -78,8 +76,7 @@ my_model <- base_model(
 
 ``` r
 
-m |>
-  model_dump(exclude_null = TRUE, camels = TRUE)
+m |> model_dump(exclude_null = TRUE, camels = TRUE)
 #> $convertMeToCamelCase
 #> [1] "okay"
 #> 
@@ -92,8 +89,7 @@ m |>
 
 ``` r
 
-m |>
-  model_dump(include = c("a", "b"))
+m |> model_dump(include = c("a", "b"))
 #> $b
 #> [1] 10
 #> 
@@ -101,13 +97,14 @@ m |>
 #> NULL
 ```
 
-### Type safety in functions
+### Type safety inside functions
 
 ``` r
-# Use type checking inside your functions
-
 add_two_numbers <- function(a, b) {
-  validate_args(a = is_scalar_double, b = is_scalar_double)
+  validate_args(
+    a = is_scalar_double,
+    b = is_scalar_double
+  )
   a + b
 }
 
@@ -117,9 +114,7 @@ add_two_numbers(2, 4)
 
 ``` r
 
-try(
-  add_two_numbers(2, c(2, 4))
-)
+try(add_two_numbers(2, c(2, 4)))
 #> Error in raise_type_check_error(k, value, type_check) : 
 #>   Type check failed.
 #> ℹ field: b
@@ -143,9 +138,7 @@ devide_two_numbers(4, 2)
 
 ``` r
 
-try(
-  devide_two_numbers(4, 0)
-)
+try(devide_two_numbers(4, 0))
 #> Error in raise_type_check_error(k, value, type_check) : 
 #>   Type check failed.
 #> ℹ field: b

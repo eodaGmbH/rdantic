@@ -2,7 +2,7 @@
 % Please edit documentation in R/types.R
 \name{validate_args}
 \alias{validate_args}
-\title{Validate args inside function}
+\title{Validate function arguments}
 \usage{
 validate_args(..., .validators_before = NULL, .validators_after = NULL)
 }
@@ -17,5 +17,5 @@ validate_args(..., .validators_before = NULL, .validators_after = NULL)
 model function
 }
 \description{
-Validate args inside function
+Validate function arguments
 }

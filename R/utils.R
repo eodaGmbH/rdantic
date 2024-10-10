@@ -10,6 +10,10 @@ keys_to_camel_case_DEPRECATED <- function(x) {
   stats::setNames(x, to_camel_case(names(x)))
 }
 
+#' Convert keys to camel case
+#' @param x list
+#' @param .recursive Whether to convert keys on all levels.
+#' @export
 keys_to_camel_case <- function(x, .recursive = TRUE) {
   if (is.null(x)) {
     return(x)
@@ -41,11 +45,14 @@ camels_to_snakes <- function(strings) {
   gsub(" ", "_", tolower(gsub("(.)([A-Z])", "\\1 \\2", strings)))
 }
 
-# TODO: Make it recursive
 keys_to_snake_case_DEPRECATED <- function(x) {
   stats::setNames(x, camels_to_snakes(names(x)))
 }
 
+#' Convert keys to snake case
+#' @param x list
+#' @param .recursive Whether to convert keys on all levels.
+#' @export
 keys_to_snake_case <- function(x, .recursive = TRUE) {
   l <- list()
   for (k in names(x)) {
