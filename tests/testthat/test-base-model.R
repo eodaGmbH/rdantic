@@ -33,3 +33,17 @@ test_that("validators before", {
   # Assert
   expect_equal(m, list(a = 1L, b = 2L))
 })
+
+test_that("validate func args", {
+  # Prepare
+  f <- function(a, b) {
+    validate_args(a = is.integer, b = is.integer)
+    a + b
+  }
+
+  # Act
+  res <- f(2L, 4L)
+
+  # Assert
+  expect_equal(res, 6L)
+})

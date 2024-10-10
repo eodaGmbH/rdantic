@@ -5,7 +5,11 @@ get_settings <- function(types, prefix = "") {
       env_var_name <- toupper(glue::glue("{prefix}_{k}"))
       as_type <- types[[k]]
       .obj[[k]] <- as_type(Sys.getenv(env_var_name))
+
+      # Do not allow NA
+      if (is.na(.obj[[k]])) raise_type_check_error(env_var_name, .obj[[k]], as_type)
     }
+
     return(.obj)
   }
 }

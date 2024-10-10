@@ -4,11 +4,10 @@ my_model <- base_model(
   a = is.numeric,
   b = is.numeric,
   # txt = is_optional(rlang::is_scalar_character),
-  txt = ~ rlang::is_scalar_character(.x) | is.null(.x),
-  .validators = list(
-    b = function(x) as.numeric(x) * 20
-  )
+  txt = ~ rlang::is_scalar_character(.x) | is.null(.x)
 )
+
+my_model(a = 10, b = 20, txt = "Hi")
 
 x <- list(
   a = 10,

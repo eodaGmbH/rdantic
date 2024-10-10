@@ -17,7 +17,7 @@ raise_type_check_error <- function(key, value, f_type_check) {
 
 validate_model_values <- function(.obj, validators) {
   for (k in names(validators)) {
-    .obj[[k]] <- validators[[k]](.obj[[k]])
+    .obj[[k]] <- rlang::as_function(validators[[k]])(.obj[[k]])
   }
 
   return(.obj)
@@ -41,7 +41,10 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
 
     # for (k in names(.obj)) {
     for (k in names(types)) {
-      if (!k %in% names(.obj)) .obj[k] <- list(NULL)
+      if (!is.environment(.obj) & !k %in% names(.obj)) {
+        .obj[k] <- list(NULL)
+      }
+
       type_check <- rlang::as_function(types[[k]])
       value <- .obj[[k]]
       if (!type_check(value)) {

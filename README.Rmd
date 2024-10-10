@@ -71,20 +71,20 @@ m |>
 # Use type checking inside your functions
 
 add_two_numbers <- function(a, b) {
-  validate_args(a = is.numeric, b = is.numeric)
+  validate_args(a = is_scalar_double, b = is_scalar_double)
   a + b
 }
 
 add_two_numbers(2, 4)
 
 try(
-  add_two_numbers(2, "4")
+  add_two_numbers(2, c(2, 4))
 )
 
 devide_two_numbers <- function(a, b) {
   validate_args(
-    a = is.numeric,
-    b = ~ is.numeric(.x) & .x != 0
+    a = is_double,
+    b = ~ is_double(.x) & .x != 0
   )
   a / b
 }
@@ -97,20 +97,18 @@ try(
 
 # Add validators
 
-numbers_with_validator <- base_model(
-  a = is.numeric,
-  b = is.numeric,
-  .validators = list(
-    b = function(x) ifelse(x == 0, 1, x)
+devide_two_numbers <- function(a, b) {
+  validate_args(
+    a = is_double,
+    b = is_double,
+    .validators_after = list(
+      b = ~ ifelse(.x == 0, 1, .x)
+    )
   )
-)
-
-devide_two_numbers_set_0_to_1 <- function(a, b) {
-  params <- numbers_with_validator(environment())
-  params$a / params$b
+  a / b
 }
 
-devide_two_numbers_set_0_to_1(4, 0)
+devide_two_numbers(4, 0)
 ```
 
 ### Get settings from env vars
@@ -128,4 +126,8 @@ postgres_settings <- base_settings(
 )
 
 postgres_settings()
+
+Sys.setenv(POSTGRES_PORT = "")
+
+try(postgres_settings())
 ```
