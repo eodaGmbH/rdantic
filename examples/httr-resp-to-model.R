@@ -12,7 +12,8 @@ cat_facts_model <- base_model(
   text = is.character,
   created_at = is.character,
   updated_at = is.character,
-  status = ~ is.list(status_model(.x)),
+  # status = ~ is.list(status_model(.x)),
+  status = is_sub_model(status_model),
   .validators_after = list(
     created_at = as_datetime,
     updated_at= as_datetime

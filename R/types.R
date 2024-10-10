@@ -11,6 +11,13 @@ is_optional <- function(.f) {
 
 is_optional2 <- function(.f) set_attributes(.f, optional = TRUE)
 
+#' Check sub model
+#' @param sub_model sub model
+#' @export
+is_sub_model <- function(sub_model) {
+  function(x) is.list(sub_model(x))
+}
+
 # ---
 #' Validate args inside function
 #' @inherit base_model params return
