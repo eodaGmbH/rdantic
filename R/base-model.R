@@ -59,6 +59,9 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
 
     if (is.environment(.obj)) invisible(.obj)
 
+    # Only return defined fields
+    .obj <- purrr::keep_at(.obj, names(types))
+
     if (is.list(.obj) & isTRUE(.drop_null)) {
       return(purrr::compact(.obj))
     }

@@ -41,6 +41,7 @@ camels_to_snakes <- function(strings) {
   gsub(" ", "_", tolower(gsub("(.)([A-Z])", "\\1 \\2", strings)))
 }
 
+# TODO: Make it recursive
 keys_to_snake_case <- function(x) {
   stats::setNames(x, camels_to_snakes(names(x)))
 }
