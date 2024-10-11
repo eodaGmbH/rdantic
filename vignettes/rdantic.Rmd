@@ -22,28 +22,28 @@ library(rlang)
 ## Models
 
 ```{r}
-person <- base_model(
+person_model <- base_model(
   name = is_scalar_character,
   age = is_scalar_integer
 )
 
-person(
+person_model(
   name = "Lee",
   age = 100L
 )
 
-try(person(name = "Lee", age = 100))
+try(person_model(name = "Lee", age = 100))
 
 # It is also possible to pass lists:
-response_from_rest_api <- list(name = "Morgan", age = 100L)
+external_data <- list(name = "Morgan", age = 100L)
 
-response_from_rest_api |> person()
+person_model(external_data)
 ```
 
 ## Validators
 
 ```{r}
-person <- base_model(
+person_model <- base_model(
   name = is_scalar_character,
   age = is_scalar_integer,
   .validators_before = list(
@@ -51,30 +51,30 @@ person <- base_model(
   )
 )
 
-person(name = "Lee", age = 100)
+person_model(name = "Lee", age = 100)
 ```
 
 ## Models inside models
 
 ```{r}
-address <- base_model(
+address_model <- base_model(
   city = is_scalar_character,
   country = is_scalar_character
 )
 
-person <- base_model(
+person_model <- base_model(
   name = is_scalar_character,
   age = is_scalar_integer,
-  address = is_another_model(address)
+  address = is_another_model(address_model)
 )
 
-person(
+person_model(
   name = "Peter",
   age = 12L,
-  address = address(city = "Kassel", country = "Germany")
+  address = address_model(city = "Kassel", country = "Germany")
 )
 
-response_from_rest_api <- list(
+external_data <- list(
   statusCode = 200L,
   data = list(
     value = 10,
@@ -95,7 +95,7 @@ api_model <- base_model(
   data = is_another_model(data_model)
 )
 
-response_from_rest_api |>
+external_data |>
   keys_to_snake_case() |>
   api_model()
 ```
