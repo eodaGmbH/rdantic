@@ -23,6 +23,8 @@ validate_model_values <- function(.obj, validators) {
   return(.obj)
 }
 
+# TODO: Rename types to fields
+# TODO: Can/Should we rename '.obj' to 'obj'?
 check_types <- function(types, validators_before = NULL, validators_after = NULL) {
   function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
 
@@ -33,6 +35,7 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
       .obj <- utils::modifyList(.obj, list(...), keep.null = TRUE)
     }
 
+    # TODO: Remove
     if (length(.obj) == 0) .obj <- rlang::caller_env()
 
     if (!is.null(validators_before)) {
@@ -42,9 +45,11 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
     # for (k in names(.obj)) {
     for (k in names(types)) {
       if (!is.environment(.obj) & !k %in% names(.obj)) {
+        # TODO: Do we really want this?
         .obj[k] <- list(NULL)
       }
 
+      # TODO: Rename to 'fn_type_check'
       type_check <- rlang::as_function(types[[k]])
       value <- .obj[[k]]
       if (!type_check(value)) {
@@ -105,6 +110,27 @@ model_dump <- function(.obj,
   return(.obj)
 }
 
+# ---
+#' Validate function arguments
+#' @inherit base_model params return
+#' @export
+validate_args <- function(..., .validators_before = NULL, .validators_after = NULL) {
+  base_model(
+    ...,
+    .validators_before = .validators_before,
+    .validators_after = .validators_after
+  )(rlang::caller_env())
+}
+
+# ---
+#' Validate function parameters
+#' @param fn function containing the arguments to be checked
+#' @export
+validate_fn <- function(fn) {
+  fmls<- rlang::fn_fmls(fn)
+  fields <- purrr::map(as.list(fmls), eval)
+  purrr::exec(base_model, !!!fields)(rlang::caller_env())
+}
 
 # model_dump_json <- function(.obj, ...) {
 #  model_dump(.obj, ...) |>

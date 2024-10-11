@@ -17,15 +17,3 @@ is_optional2 <- function(.f) set_attributes(.f, optional = TRUE)
 is_another_model <- function(.model) {
   function(x) is.list(.model(x))
 }
-
-# ---
-#' Validate function arguments
-#' @inherit base_model params return
-#' @export
-validate_args <- function(..., .validators_before = NULL, .validators_after = NULL) {
-  base_model(
-    ...,
-    .validators_before = .validators_before,
-    .validators_after = .validators_after
-  )(rlang::caller_env())
-}
