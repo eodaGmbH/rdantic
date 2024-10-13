@@ -111,6 +111,21 @@ add_two_numbers(10, 20)
 
 try(add_two_numbers(10, c(20, 30)))
 ```
+
+It also possible to add the type checks in this way:
+
+```{r}
+add_two_numbers <- function(a = is_scalar_integer, 
+                            b = is_scalar_integer) {
+  validate_fn(add_two_numbers)
+  a + b
+}
+
+add_two_numbers(1L, 3L)
+
+try(add_two_numbers(1L, 4.6))
+```
+
 ## Settings
 
 ```{r}
