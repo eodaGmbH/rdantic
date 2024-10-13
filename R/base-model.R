@@ -110,3 +110,34 @@ model_dump <- function(.obj,
 #  model_dump(.obj, ...) |>
 #    jsonlite::toJSON(auto_unbox = TRUE)
 # }
+
+
+#' Derive a basemodel from a template list. Checks for type, mode and class of the object.
+#'
+#' @param template A list of key/value pairs with the value used for type derivation.
+#'
+#' @return Returns a base model object.
+#' @export
+#'
+#' @example examples/derive-model.R
+derive_model <- function(template){
+  if(!is.list(template)){
+    stop ("Please provide a list of key/value pairs with the value used for type derivation.)")
+  }
+  validators <- lapply(template, function(value){
+    type <- typeof(value)
+    type <- deparse(substitute(type))
+    class <- class(value)
+    class <- deparse(substitute(class))
+    mode <- mode(value)
+    mode <- deparse(substitute(mode))
+    validator <- eval(parse(text = paste0("function(x) { (typeof(x) == ", type,
+                                     " && class(x) ==", class,
+                                     " && mode(x) == ", mode,
+                                     ")}")))
+    return(validator)
+  })
+  types_and_checks <- stats::setNames(validators,names(template))
+  return(do.call(base_model, types_and_checks))
+}
+
