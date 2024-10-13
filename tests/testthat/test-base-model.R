@@ -11,6 +11,7 @@ test_that("lists", {
 
   # Assert
   expect_equal(l, list(a = 10.5, b = 20L, txt = "Hi"))
+  # expect_equal(names(l), c("a", "b", "txt"))
 })
 
 test_that("validators before", {
@@ -46,4 +47,18 @@ test_that("validate func args", {
 
   # Assert
   expect_equal(res, 6L)
+})
+
+test_that("validate func", {
+  # Prepare
+  f_with_typed_args <- function(a = is.integer, b = is.integer) {
+    validate_fn(f_with_typed_args)
+    a + b
+  }
+
+  # Act
+  res <- f_with_typed_args(2L, 5L)
+
+  # Assert
+  expect_equal(res, 7L)
 })
