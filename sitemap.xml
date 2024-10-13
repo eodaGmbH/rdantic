@@ -6,6 +6,7 @@
 <url><loc>/articles/rdantic.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
 <url><loc>/reference/base_model.html</loc></url>
 <url><loc>/reference/base_settings.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
@@ -15,5 +16,6 @@
 <url><loc>/reference/keys_to_snake_case.html</loc></url>
 <url><loc>/reference/model_dump.html</loc></url>
 <url><loc>/reference/validate_args.html</loc></url>
+<url><loc>/reference/validate_fn.html</loc></url>
 </urlset>
 
