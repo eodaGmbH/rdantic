@@ -2,11 +2,17 @@ Package: rdantic
 Type: Package
 Title: Type Safety for R
 Version: 0.1.0
+Date: 2024-10-13
 Authors@R: c(
-    person("Stefan", "Kuethe", email = "crazycapivara@gmail.com", role = c("aut", "cre", "cph"))
+    person("Stefan", "Kuethe", email = "crazycapivara@gmail.com", role = c("aut", "cre", "cph")),
+    person("Nico", "Friess", email = "nico.friess@eoda.de", role = "aut")
   )
 Maintainer: Stefan Kuethe <crazycapivara@gmail.com>
 Description: Adds type safety to R.
+URL:
+  https://github.com/eodaGmbH/rdantic
+  https://eodagmbh.github.io/rdantic/
+BugReports: https://github.com/eodaGmbH/rdantic/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
