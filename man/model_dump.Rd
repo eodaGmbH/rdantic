@@ -20,9 +20,9 @@ model_dump(
 
 \item{include}{A set of fields to include in the output.}
 
-\item{exclude_null}{Whether to drop items with the value `NULL`.}
+\item{exclude_null}{Whether to drop items with the value \code{NULL}.}
 
-\item{exclude_na}{Whether to drop items with the value `NA`.}
+\item{exclude_na}{Whether to drop items with the value \code{NA}.}
 
 \item{camels}{Whether to convert all keys to camel case.}
 }

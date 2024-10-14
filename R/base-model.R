@@ -136,3 +136,23 @@ validate_fn <- function(fn) {
 #  model_dump(.obj, ...) |>
 #    jsonlite::toJSON(auto_unbox = TRUE)
 # }
+
+
+#' Derive a [base_model()] from a template list.
+#' Checks for type, mode and class of the object.
+#'
+#' @param template A list of key/value pairs with the value used for type derivation.
+#'
+#' @returns Returns a [base_model()] object.
+#' @export
+#'
+#' @example examples/derive-model.R
+derive_model <- function(template){
+  fields <- purrr::map(template, function(v) {
+    body <- substitute({
+      typeof(x) == type_ & class(x) == class_ & mode(x) == mode_
+    }, list(type_ = typeof(v), class_ = class(v), mode_ = mode(v)))
+    rlang::new_function(alist(x = ), body = body)
+  })
+  do.call(base_model, fields)
+}
