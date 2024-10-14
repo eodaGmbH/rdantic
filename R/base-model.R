@@ -112,32 +112,21 @@ model_dump <- function(.obj,
 # }
 
 
-#' Derive a basemodel from a template list. Checks for type, mode and class of the object.
+#' Derive a [base_model()] from a template list.
+#' Checks for type, mode and class of the object.
 #'
 #' @param template A list of key/value pairs with the value used for type derivation.
 #'
-#' @return Returns a base model object.
+#' @returns Returns a [base_model()] object.
 #' @export
 #'
 #' @example examples/derive-model.R
 derive_model <- function(template){
-  if(!is.list(template)){
-    stop ("Please provide a list of key/value pairs with the value used for type derivation.)")
-  }
-  validators <- lapply(template, function(value){
-    type <- typeof(value)
-    type <- deparse(substitute(type))
-    class <- class(value)
-    class <- deparse(substitute(class))
-    mode <- mode(value)
-    mode <- deparse(substitute(mode))
-    validator <- eval(parse(text = paste0("function(x) { (typeof(x) == ", type,
-                                     " && class(x) ==", class,
-                                     " && mode(x) == ", mode,
-                                     ")}")))
-    return(validator)
+  fields <- purrr::map(template, function(v) {
+    body <- substitute({
+      typeof(x) == type_ & class(x) == class_ & mode(x) == mode_
+    }, list(type_ = typeof(v), class_ = class(v), mode_ = mode(v)))
+    rlang::new_function(alist(x = ), body = body)
   })
-  types_and_checks <- stats::setNames(validators,names(template))
-  return(do.call(base_model, types_and_checks))
+  do.call(base_model, fields)
 }
-
