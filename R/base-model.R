@@ -25,13 +25,12 @@ validate_model_values <- function(.obj, validators) {
 
 # TODO: Rename types to fields
 # TODO: Can/Should we rename '.obj' to 'obj'?
-base_model <- function(fields = list(), ..., .validators_before = NULL, .validators_after = NULL) {
+base_model <- function(fields = list(), ...,
+                       .validators_before = NULL,
+                       .validators_after = NULL,
+                       .model_config = list()) {
   fields = utils::modifyList(fields, list(...), keep.null = TRUE)
-  function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
-
-    # Convert environment into list
-    if (isTRUE(.force_list)) .obj <- as.list(.obj)
-
+  function(.obj = list(), ...) {
     if (is.list(.obj)) {
       .obj <- utils::modifyList(.obj, list(...), keep.null = TRUE)
     }
@@ -65,18 +64,14 @@ base_model <- function(fields = list(), ..., .validators_before = NULL, .validat
     # Only return defined fields
     .obj <- purrr::keep_at(.obj, names(fields))
 
-    if (is.list(.obj) & isTRUE(.drop_null)) {
-      return(purrr::compact(.obj))
-    }
-
     return(.obj)
   }
 }
 
 #' Create a model
-#' @param ... model parameters and their type-check functions
-#' @param .validators_before list of validators that run before types are checked
-#' @param .validators_after list of validators that run after types are checked
+#' @param ... Model parameters and their type-check functions.
+#' @param .validators_before A list of validators that run before types are checked.
+#' @param .validators_after A list of validators that run after types are checked.
 #' @returns model function
 #' @example examples/api/base-model.R
 #' @export
