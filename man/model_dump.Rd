@@ -2,10 +2,10 @@
 % Please edit documentation in R/base-model.R
 \name{model_dump}
 \alias{model_dump}
-\title{Modify a model object}
+\title{Modify a \code{\link[=base_model]{base_model()}} object}
 \usage{
 model_dump(
-  .obj,
+  obj,
   exclude = NULL,
   include = NULL,
   exclude_null = FALSE,
@@ -14,7 +14,7 @@ model_dump(
 )
 }
 \arguments{
-\item{.obj}{model object}
+\item{obj}{model object}
 
 \item{exclude}{A set of fields to exclude from the output.}
 
@@ -30,5 +30,5 @@ model_dump(
 list
 }
 \description{
-Modify a model object
+Modify a \code{\link[=base_model]{base_model()}} object
 }

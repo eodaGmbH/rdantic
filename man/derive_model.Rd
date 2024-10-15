@@ -2,8 +2,7 @@
 % Please edit documentation in R/base-model.R
 \name{derive_model}
 \alias{derive_model}
-\title{Derive a \code{\link[=base_model]{base_model()}} from a template list.
-Checks for type, mode and class of the object.}
+\title{Derive a \code{\link[=base_model]{base_model()}} from a template list.}
 \usage{
 derive_model(template)
 }
@@ -14,7 +13,6 @@ derive_model(template)
 Returns a \code{\link[=base_model]{base_model()}} object.
 }
 \description{
-Derive a \code{\link[=base_model]{base_model()}} from a template list.
 Checks for type, mode and class of the object.
 }
 \examples{

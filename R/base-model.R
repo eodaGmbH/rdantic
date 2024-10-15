@@ -5,7 +5,8 @@ raise_type_check_error <- function(key, value, f_type_check) {
     rlang::prim_name(f_type_check),
     rlang::quo_text(f_type_check)
   )
-  cli::cli_abort(
+  # cli::cli_abort(
+  cli::format_error(
     c(
       "Type check failed.",
       i = "field: {key}",
@@ -23,8 +24,17 @@ validate_model_values <- function(obj, validators) {
   return(obj)
 }
 
-# TODO: Rename types to fields
-# TODO: Can/Should we rename 'obj' to 'obj'?
+#' Create a model
+#'
+#' @param fields A named list where values are functions used for the type checks.
+#' @param ... Model parameters and their functions used for the type checks.
+#'  Usually only `fields` or `...` are supplied.
+#' @param .validators_before A list of validators that run before types are checked.
+#' @param .validators_after A list of validators that run after types are checked.
+#' @param .model_config **not used at the moment**
+#' @returns base model function/
+#' @example examples/api/base-model.R
+#' @export
 base_model <- function(fields = list(), ...,
                        .validators_before = NULL,
                        .validators_after = NULL,
@@ -51,7 +61,7 @@ base_model <- function(fields = list(), ...,
       check_type <- rlang::as_function(fields[[name]])
       value <- obj[[name]]
       if (isFALSE(check_type(value))) {
-        raise_type_check_error(name, value, check_type)
+        stop(raise_type_check_error(name, value, check_type))
       }
     }
 
@@ -68,19 +78,13 @@ base_model <- function(fields = list(), ...,
   }
 }
 
-#' Create a model
-#' @param ... Model parameters and their type-check functions.
-#' @param .validators_before A list of validators that run before types are checked.
-#' @param .validators_after A list of validators that run after types are checked.
-#' @returns model function
-#' @example examples/api/base-model.R
-#' @export
+
 base_model_DEPRECATED <- function(..., .validators_before = NULL, .validators_after = NULL) {
   types <- list(...)
   return(check_types(types, .validators_before, .validators_after))
 }
 
-#' Modify a model object
+#' Modify a [base_model()] object
 #' @param obj model object
 #' @param exclude A set of fields to exclude from the output.
 #' @param include A set of fields to include in the output.
@@ -105,7 +109,9 @@ model_dump <- function(obj,
 
 # ---
 #' Validate function arguments
+#'
 #' @inherit base_model params return
+#' @example examples/api/validate-args.R
 #' @export
 validate_args <- function(..., .validators_before = NULL, .validators_after = NULL) {
   base_model(
@@ -116,8 +122,11 @@ validate_args <- function(..., .validators_before = NULL, .validators_after = NU
 }
 
 # ---
-#' Validate function parameters
-#' @param fn function containing the arguments to be checked
+#' Validate function arguments
+#'
+#' @param fn A function containing the arguments to be checked.
+#' @returns The function's `environment`.
+#' @example examples/api/validate-fn.R
 #' @export
 validate_fn <- function(fn) {
   fmls<- rlang::fn_fmls(fn)
@@ -125,21 +134,15 @@ validate_fn <- function(fn) {
   base_model(fields)(rlang::caller_env())
 }
 
-# model_dump_json <- function(obj, ...) {
-#  model_dump(obj, ...) |>
-#    jsonlite::toJSON(auto_unbox = TRUE)
-# }
-
-
+# ---
 #' Derive a [base_model()] from a template list.
+#'
 #' Checks for type, mode and class of the object.
 #'
 #' @param template A list of key/value pairs with the value used for type derivation.
-#'
 #' @returns Returns a [base_model()] object.
-#' @export
-#'
 #' @example examples/derive-model.R
+#' @export
 derive_model <- function(template){
   fields <- purrr::map(template, function(v) {
     body <- substitute({
@@ -147,5 +150,5 @@ derive_model <- function(template){
     }, list(type_ = typeof(v), class_ = class(v), mode_ = mode(v)))
     rlang::new_function(alist(x = ), body = body)
   })
-  base_model(fields)
+  return(base_model(fields))
 }
