@@ -25,8 +25,8 @@ validate_model_values <- function(.obj, validators) {
 
 # TODO: Rename types to fields
 # TODO: Can/Should we rename '.obj' to 'obj'?
-base_model <- function(..., .validators_before = NULL, .validators_after = NULL) {
-  types <- list(...)
+base_model <- function(fields = list(), ..., .validators_before = NULL, .validators_after = NULL) {
+  fields = utils::modifyList(fields, list(...), keep.null = TRUE)
   function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
 
     # Convert environment into list
@@ -43,19 +43,16 @@ base_model <- function(..., .validators_before = NULL, .validators_after = NULL)
       .obj <- validate_model_values(.obj, .validators_before)
     }
 
-    # for (k in names(.obj)) {
-    for (k in names(types)) {
-      if (!is.environment(.obj) & !k %in% names(.obj)) {
-        # TODO: Do we really want this?
-        .obj[k] <- list(NULL)
-      }
+    for (name in names(fields)) {
+      # TODO: Do we really want this?
+      #if (!is.environment(.obj) & !k %in% names(.obj)) {
+      #  .obj[k] <- list(NULL)
+      #}
 
-      # TODO: Rename to 'fn_type_check'
-      type_check <- rlang::as_function(types[[k]])
-      value <- .obj[[k]]
-      if (!type_check(value)) {
-        raise_type_check_error(k, value, type_check)
-        # stop("Value of '", k, "' ", rlang::quo_text(value), " failed test: ", deparse(substitute(type_check)), call. = FALSE)
+      check_type <- rlang::as_function(fields[[name]])
+      value <- .obj[[name]]
+      if (isFALSE(check_type(value))) {
+        raise_type_check_error(name, value, check_type)
       }
     }
 
@@ -66,7 +63,7 @@ base_model <- function(..., .validators_before = NULL, .validators_after = NULL)
     if (is.environment(.obj)) return(invisible(.obj))
 
     # Only return defined fields
-    .obj <- purrr::keep_at(.obj, names(types))
+    .obj <- purrr::keep_at(.obj, names(fields))
 
     if (is.list(.obj) & isTRUE(.drop_null)) {
       return(purrr::compact(.obj))
