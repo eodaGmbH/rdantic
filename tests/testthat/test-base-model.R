@@ -62,3 +62,22 @@ test_that("validate func", {
   # Assert
   expect_equal(res, 7L)
 })
+
+test_that("validate data frame", {
+  # Prepare
+  my_model <- base_model(
+    mpg = is.double,
+    cyl = is.integer,
+    .validators_before = list(
+      cyl = as.integer
+    )
+  )
+
+  # Act
+  df <- my_model(mtcars)
+
+  # Assert
+  expect_equal(names(df), c("mpg", "cyl"))
+  expect_s3_class(df, "data.frame")
+  expect_type(df$cyl, "integer")
+})
