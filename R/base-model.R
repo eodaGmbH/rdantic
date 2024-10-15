@@ -25,7 +25,8 @@ validate_model_values <- function(.obj, validators) {
 
 # TODO: Rename types to fields
 # TODO: Can/Should we rename '.obj' to 'obj'?
-check_types <- function(types, validators_before = NULL, validators_after = NULL) {
+base_model <- function(..., .validators_before = NULL, .validators_after = NULL) {
+  types <- list(...)
   function(.obj = list(), ..., .drop_null = FALSE, .force_list = FALSE) {
 
     # Convert environment into list
@@ -38,8 +39,8 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
     # TODO: Remove
     if (length(.obj) == 0) .obj <- rlang::caller_env()
 
-    if (!is.null(validators_before)) {
-      .obj <- validate_model_values(.obj, validators_before)
+    if (!is.null(.validators_before)) {
+      .obj <- validate_model_values(.obj, .validators_before)
     }
 
     # for (k in names(.obj)) {
@@ -58,8 +59,8 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
       }
     }
 
-    if (!is.null(validators_after)) {
-      .obj <- validate_model_values(.obj, validators_after)
+    if (!is.null(.validators_after)) {
+      .obj <- validate_model_values(.obj, .validators_after)
     }
 
     if (is.environment(.obj)) return(invisible(.obj))
@@ -82,7 +83,7 @@ check_types <- function(types, validators_before = NULL, validators_after = NULL
 #' @returns model function
 #' @example examples/api/base-model.R
 #' @export
-base_model <- function(..., .validators_before = NULL, .validators_after = NULL) {
+base_model_DEPRECATED <- function(..., .validators_before = NULL, .validators_after = NULL) {
   types <- list(...)
   return(check_types(types, .validators_before, .validators_after))
 }
