@@ -15,56 +15,56 @@ raise_type_check_error <- function(key, value, f_type_check) {
   )
 }
 
-validate_model_values <- function(.obj, validators) {
+validate_model_values <- function(obj, validators) {
   for (k in names(validators)) {
-    .obj[[k]] <- rlang::as_function(validators[[k]])(.obj[[k]])
+    obj[[k]] <- rlang::as_function(validators[[k]])(obj[[k]])
   }
 
-  return(.obj)
+  return(obj)
 }
 
 # TODO: Rename types to fields
-# TODO: Can/Should we rename '.obj' to 'obj'?
+# TODO: Can/Should we rename 'obj' to 'obj'?
 base_model <- function(fields = list(), ...,
                        .validators_before = NULL,
                        .validators_after = NULL,
                        .model_config = list()) {
   fields = utils::modifyList(fields, list(...), keep.null = TRUE)
-  function(.obj = list(), ...) {
-    if (is.list(.obj)) {
-      .obj <- utils::modifyList(.obj, list(...), keep.null = TRUE)
+  function(obj = list(), ...) {
+    if (is.list(obj)) {
+      obj <- utils::modifyList(obj, list(...), keep.null = TRUE)
     }
 
     # TODO: Remove
-    if (length(.obj) == 0) .obj <- rlang::caller_env()
+    if (length(obj) == 0) obj <- rlang::caller_env()
 
     if (!is.null(.validators_before)) {
-      .obj <- validate_model_values(.obj, .validators_before)
+      obj <- validate_model_values(obj, .validators_before)
     }
 
     for (name in names(fields)) {
       # TODO: Do we really want this?
-      #if (!is.environment(.obj) & !k %in% names(.obj)) {
-      #  .obj[k] <- list(NULL)
+      #if (!is.environment(obj) & !k %in% names(obj)) {
+      #  obj[k] <- list(NULL)
       #}
 
       check_type <- rlang::as_function(fields[[name]])
-      value <- .obj[[name]]
+      value <- obj[[name]]
       if (isFALSE(check_type(value))) {
         raise_type_check_error(name, value, check_type)
       }
     }
 
     if (!is.null(.validators_after)) {
-      .obj <- validate_model_values(.obj, .validators_after)
+      obj <- validate_model_values(obj, .validators_after)
     }
 
-    if (is.environment(.obj)) return(invisible(.obj))
+    if (is.environment(obj)) return(invisible(obj))
 
     # Only return defined fields
-    .obj <- purrr::keep_at(.obj, names(fields))
+    obj <- purrr::keep_at(obj, names(fields))
 
-    return(.obj)
+    return(obj)
   }
 }
 
@@ -81,7 +81,7 @@ base_model_DEPRECATED <- function(..., .validators_before = NULL, .validators_af
 }
 
 #' Modify a model object
-#' @param .obj model object
+#' @param obj model object
 #' @param exclude A set of fields to exclude from the output.
 #' @param include A set of fields to include in the output.
 #' @param exclude_null Whether to drop items with the value `NULL`.
@@ -89,18 +89,18 @@ base_model_DEPRECATED <- function(..., .validators_before = NULL, .validators_af
 #' @param camels Whether to convert all keys to camel case.
 #' @returns list
 #' @export
-model_dump <- function(.obj,
+model_dump <- function(obj,
                        exclude = NULL,
                        include = NULL,
                        exclude_null = FALSE,
                        exclude_na = FALSE,
                        camels = FALSE) {
-  if (!is.null(exclude)) .obj <- purrr::discard_at(.obj, exclude)
-  if (!is.null(include)) .obj <- purrr::keep_at(.obj, include)
-  if (exclude_null) .obj <- purrr::discard(.obj, is.null)
-  if (exclude_na) .obj <- purrr::discard(.obj, is.na)
-  if (camels) .obj <- keys_to_camel_case(.obj)
-  return(.obj)
+  if (!is.null(exclude)) obj <- purrr::discard_at(obj, exclude)
+  if (!is.null(include)) obj <- purrr::keep_at(obj, include)
+  if (exclude_null) obj <- purrr::discard(obj, is.null)
+  if (exclude_na) obj <- purrr::discard(obj, is.na)
+  if (camels) obj <- keys_to_camel_case(obj)
+  return(obj)
 }
 
 # ---
@@ -122,11 +122,11 @@ validate_args <- function(..., .validators_before = NULL, .validators_after = NU
 validate_fn <- function(fn) {
   fmls<- rlang::fn_fmls(fn)
   fields <- purrr::map(as.list(fmls), eval)
-  purrr::exec(base_model, !!!fields)(rlang::caller_env())
+  base_model(fields)(rlang::caller_env())
 }
 
-# model_dump_json <- function(.obj, ...) {
-#  model_dump(.obj, ...) |>
+# model_dump_json <- function(obj, ...) {
+#  model_dump(obj, ...) |>
 #    jsonlite::toJSON(auto_unbox = TRUE)
 # }
 
@@ -147,5 +147,5 @@ derive_model <- function(template){
     }, list(type_ = typeof(v), class_ = class(v), mode_ = mode(v)))
     rlang::new_function(alist(x = ), body = body)
   })
-  do.call(base_model, fields)
+  base_model(fields)
 }
