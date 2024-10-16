@@ -2,12 +2,12 @@
 % Please edit documentation in R/base-model.R
 \name{derive_model}
 \alias{derive_model}
-\title{Derive a \code{\link[=base_model]{base_model()}} from a template list.}
+\title{Derive a \code{\link[=base_model]{base_model()}} object from a template list.}
 \usage{
 derive_model(template)
 }
 \arguments{
-\item{template}{A list of key/value pairs with the value used for type derivation.}
+\item{template}{A list of key-value pairs where the value is used for type derivation.}
 }
 \value{
 Returns a \code{\link[=base_model]{base_model()}} object.

@@ -14,7 +14,7 @@ model_dump(
 )
 }
 \arguments{
-\item{obj}{model object}
+\item{obj}{\code{\link[=base_model]{base_model()}} object}
 
 \item{exclude}{A set of fields to exclude from the output.}
 
@@ -31,4 +31,17 @@ list
 }
 \description{
 Modify a \code{\link[=base_model]{base_model()}} object
+}
+\examples{
+my_model <- base_model(
+  this_is_a_character = is.character,
+  this_is_an_integer = is.integer,
+  this_value_can_be_null = ~ is.integer(.x) | is.null(.x)
+)
+
+my_model(
+  this_is_a_character = "yes",
+  this_is_an_integer = 10L,
+  this_value_can_be_null = NULL
+) |> model_dump(exclude_null = TRUE, camels = TRUE)
 }
