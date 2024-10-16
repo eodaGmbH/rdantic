@@ -1,23 +1,23 @@
-raise_type_check_error <- function(key, value, f_type_check, call = rlang::caller_env()) {
+raise_type_check_error <- function(name, value, check_type, call = rlang::caller_env()) {
   value_text <- rlang::quo_text(value)
-  f_text <- ifelse(
-    rlang::is_primitive(f_type_check),
-    rlang::prim_name(f_type_check),
-    rlang::quo_text(f_type_check)
+  check_type_text <- ifelse(
+    rlang::is_primitive(check_type),
+    rlang::prim_name(check_type),
+    rlang::quo_text(check_type)
   )
   cli::cli_abort(
     c(
       "Type check failed.",
-      i = "field: {key}",
+      i = "field: {name}",
       x = "value: {value_text}",
-      x = "test: {f_text}"
+      x = "test: {check_type_text}"
     ), call = call
   )
 }
 
 validate_fields <- function(obj, validators) {
-  for (k in names(validators)) {
-    obj[[k]] <- rlang::as_function(validators[[k]])(obj[[k]])
+  for (name in names(validators)) {
+    obj[[name]] <- rlang::as_function(validators[[name]])(obj[[name]])
   }
 
   return(obj)
