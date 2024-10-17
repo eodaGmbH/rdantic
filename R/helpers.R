@@ -33,6 +33,12 @@ set_attributes <- function(x, ...) {
 }
 
 # ---
+add_class <- function(x, cls = "base_model") {
+  class(x) <- c(class(x), cls)
+  return(x)
+}
+
+# ---
 is_not_null <- function(x) {
   isFALSE(is.null(x))
 }

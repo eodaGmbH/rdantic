@@ -1,30 +1,44 @@
 devtools::load_all()
 
-check_args <- function(...) {
-  if (length(list(...)) > 0) {
-    return(base_model2(...)(.x = rlang::caller_env()))
-  }
+#check_args <- function(...) {
+#  fields <- list(...)
+#  if (length(fields) == 0) {
+#    fn <- rlang::caller_fn()
+#    fmls <- rlang::fn_fmls(fn)
+#    fields <- purrr::map(as.list(fmls), eval)
+#  }
 
-  fn <- rlang::caller_fn()
-  fmls <- rlang::fn_fmls(fn)
-  fields <- purrr::map(as.list(fmls), eval)
-  base_model2(fields)(.x = rlang::caller_env())
-}
+#  e <- rlang::caller_env()
+#  for (name in names(e)) {
+#    value <- e[[name]]
+#    if (is.list(value)) {
+#      e[[name]] <- value$default
+#    }
+#  }
 
-f <- function(a, b) {
+#  base_model2(fields)(.x = e)
+#}
+
+f <- function(a, b = 80L) {
   check_args(a = is.integer, b = is.integer)
   a + b
 }
 
-f(2L, 4)
+f(2L)
 
-f2 <- function(aa = is.numeric, bb = is.integer) {
+f2 <- function(aa = is.numeric, bb = model_field(is.integer, 10L)) {
   check_args()
   aa + bb
 }
 
-f2(10, 20)
+f2(5)
 
 # ---
-my_model2 <- base_model2(cyl = is.double, mpg = is.integer)
-my_model2(.x = mtcars)
+my_model2 <- base_model2(
+  cyl = is.double,
+  mpg = is.integer,
+  .validators_before = list(
+    mpg = as.integer
+  )
+)
+my_model2(.x = tibble::as_tibble(mtcars))

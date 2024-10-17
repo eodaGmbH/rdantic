@@ -11,7 +11,10 @@ model_config <- function(allow_extra = FALSE, ...) {
 }
 
 # ---
-base_model2 <- function(fields = list(), ..., .model_config = model_config()) {
+base_model2 <- function(fields = list(), ...,
+                        .model_config = model_config(),
+                        .validators_before = list(),
+                        .validators_after = list()) {
   fields <- utils::modifyList(fields, list(...), keep.null = TRUE)
   fields <- purrr::map(fields, ~ {
     if (inherits(.x, "function")) {
@@ -31,12 +34,15 @@ base_model2 <- function(fields = list(), ..., .model_config = model_config()) {
       obj <- as.list(environment())
     }
 
+    obj <- validate_fields(obj, .validators_before)
+
     for (name in names(fields)) {
       check_type_fn <- rlang::as_function(fields[[name]]$fn)
       obj_value <- obj[[name]]
       if (isFALSE(check_type_fn(obj_value))) {
         cli::cli_abort(
           c(
+            x = "Type check failed.",
             i = "{name} = {rlang::quo_text(obj_value)}",
             i = "typeof({name}): {typeof(obj_value)}",
             i = "length({name}): {length(obj_value)}",
@@ -46,6 +52,8 @@ base_model2 <- function(fields = list(), ..., .model_config = model_config()) {
         )
       }
     }
+
+    obj <- validate_fields(obj, .validators_after)
 
     if (is.environment(obj)) {
       return(invisible(obj))
@@ -58,5 +66,31 @@ base_model2 <- function(fields = list(), ..., .model_config = model_config()) {
     return(obj)
   }))
 
-  return(set_attributes(model_fn, fields = fields))
+  return(
+    set_attributes(
+      model_fn,
+      fields = fields,
+      class = c(class(model_fn), "base_model")
+    )
+  )
+}
+
+# ---
+check_args <- function(...) {
+  fields <- list(...)
+  if (length(fields) == 0) {
+    fn <- rlang::caller_fn()
+    fmls <- rlang::fn_fmls(fn)
+    fields <- purrr::map(as.list(fmls), eval)
+  }
+
+  e <- rlang::caller_env()
+  for (name in names(e)) {
+    value <- e[[name]]
+    if (is.list(value)) {
+      e[[name]] <- value$default
+    }
+  }
+
+  base_model2(fields)(.x = e)
 }
