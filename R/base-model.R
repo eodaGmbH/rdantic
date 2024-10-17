@@ -11,7 +11,8 @@ raise_type_check_error <- function(name, value, check_type, call = rlang::caller
       i = "field: {name}",
       x = "value: {value_text}",
       x = "test: {check_type_text}"
-    ), call = call
+    ),
+    call = call
   )
 }
 
@@ -38,7 +39,7 @@ base_model <- function(fields = list(), ...,
                        .validators_before = NULL,
                        .validators_after = NULL,
                        .model_config = list()) {
-  fields = utils::modifyList(fields, list(...), keep.null = TRUE)
+  fields <- utils::modifyList(fields, list(...), keep.null = TRUE)
   function(obj = list(), ...) {
     if (is.list(obj)) {
       obj <- utils::modifyList(obj, list(...), keep.null = TRUE)
@@ -119,7 +120,7 @@ validate_args <- function(..., .validators_before = NULL, .validators_after = NU
 #' @example examples/api/validate-fn.R
 #' @export
 validate_fn <- function(fn) {
-  fmls<- rlang::fn_fmls(fn)
+  fmls <- rlang::fn_fmls(fn)
   fields <- purrr::map(as.list(fmls), eval)
   base_model(fields)(rlang::caller_env())
 }
@@ -133,11 +134,14 @@ validate_fn <- function(fn) {
 #' @returns Returns a [base_model()] object.
 #' @example examples/derive-model.R
 #' @export
-derive_model <- function(template){
+derive_model <- function(template) {
   fields <- purrr::map(template, function(v) {
-    body <- substitute({
-      typeof(x) == type_ & class(x) == class_ & mode(x) == mode_
-    }, list(type_ = typeof(v), class_ = class(v), mode_ = mode(v)))
+    body <- substitute(
+      {
+        typeof(x) == type_ & class(x) == class_ & mode(x) == mode_
+      },
+      list(type_ = typeof(v), class_ = class(v), mode_ = mode(v))
+    )
     rlang::new_function(alist(x = ), body = body)
   })
   return(base_model(fields))

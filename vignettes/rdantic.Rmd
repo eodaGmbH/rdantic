@@ -99,6 +99,7 @@ external_data |>
   keys_to_snake_case() |>
   api_model()
 ```
+
 ## Type safety of function arguments
 
 ```{r}
@@ -115,7 +116,7 @@ try(add_two_numbers(10, c(20, 30)))
 It also possible to add the type checks in this way:
 
 ```{r}
-add_two_numbers <- function(a = is_scalar_integer, 
+add_two_numbers <- function(a = is_scalar_integer,
                             b = is_scalar_integer) {
   validate_fn(add_two_numbers)
   a + b

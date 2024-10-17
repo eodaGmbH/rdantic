@@ -23,7 +23,8 @@ f <- function(a, b, txt) {
   return(args)
 }
 
-f(10, 20, "yes")
+e <- f(10, 20, "yes")
+e$args
 
 # ---
 another_model <- base_model(
