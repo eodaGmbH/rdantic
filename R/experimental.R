@@ -6,7 +6,12 @@ model_field <- function(fn, default = NA, ...) {
 
 
 # ---
-base_model2 <- function(...) {
+model_config <- function(allow_extra = FALSE, ...) {
+  return(c(as.list(environment()), list(...)))
+}
+
+# ---
+base_model2 <- function(..., .model_config = model_config()) {
   fields <- purrr::map(list(...), ~ {
     if (inherits(.x, "function")) {
       return(model_field(fn = .x))
@@ -45,7 +50,9 @@ base_model2 <- function(...) {
       return(invisible(obj))
     }
 
-    obj <- purrr::keep_at(obj, names(fields))
+    if (isFALSE(.model_config$allow_extra)) {
+      obj <- purrr::keep_at(obj, names(fields))
+    }
 
     return(obj)
   }))
