@@ -1,5 +1,5 @@
 f <- function(a = is.integer, b = is.integer) {
-  validate_fn(f)
+  validate_fn()
   a + b
 }
 

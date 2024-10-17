@@ -119,7 +119,7 @@ validate_args <- function(..., .validators_before = NULL, .validators_after = NU
 #' @returns The function's `environment`.
 #' @example examples/api/validate-fn.R
 #' @export
-validate_fn <- function(fn) {
+validate_fn <- function(fn = rlang::caller_fn()) {
   fmls <- rlang::fn_fmls(fn)
   fields <- purrr::map(as.list(fmls), eval)
   base_model(fields)(rlang::caller_env())

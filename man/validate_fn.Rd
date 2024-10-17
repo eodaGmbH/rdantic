@@ -4,7 +4,7 @@
 \alias{validate_fn}
 \title{Validate function arguments}
 \usage{
-validate_fn(fn)
+validate_fn(fn = rlang::caller_fn())
 }
 \arguments{
 \item{fn}{A function containing the arguments to be checked.}
@@ -17,7 +17,7 @@ Validate function arguments
 }
 \examples{
 f <- function(a = is.integer, b = is.integer) {
-  validate_fn(f)
+  validate_fn()
   a + b
 }
 
