@@ -31,3 +31,8 @@ set_attributes <- function(x, ...) {
   attributes(x) <- c(attributes(x), list(...))
   return(x)
 }
+
+# ---
+is_not_null <- function(x) {
+  isFALSE(is.null(x))
+}
