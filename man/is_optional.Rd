@@ -4,10 +4,10 @@
 \alias{is_optional}
 \title{Mark a field as optional}
 \usage{
-is_optional(.f)
+is_optional(fn)
 }
 \arguments{
-\item{.f}{type check function}
+\item{fn}{type check function}
 }
 \description{
 Mark a field as optional

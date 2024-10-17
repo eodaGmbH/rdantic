@@ -1,4 +1,4 @@
-test_that("lists", {
+test_that("validate lists", {
   # Prepare
   my_model <- base_model(
     a = is.numeric,
@@ -11,7 +11,11 @@ test_that("lists", {
 
   # Assert
   expect_equal(l, list(a = 10.5, b = 20L, txt = "Hi"))
-  # expect_equal(names(l), c("a", "b", "txt"))
+  expect_error(my_model(
+    a = 10,
+    b = 10,
+    txt = "Hi"
+  ))
 })
 
 test_that("validators before", {
@@ -35,7 +39,7 @@ test_that("validators before", {
   expect_equal(m, list(a = 1L, b = 2L))
 })
 
-test_that("validate func args", {
+test_that("validate function arguments", {
   # Prepare
   f <- function(a, b) {
     validate_args(a = is.integer, b = is.integer)
@@ -47,12 +51,13 @@ test_that("validate func args", {
 
   # Assert
   expect_equal(res, 6L)
+  expect_error(f(2, 5L))
 })
 
-test_that("validate func", {
+test_that("validate typed functions arguments", {
   # Prepare
   f_with_typed_args <- function(a = is.integer, b = is.integer) {
-    validate_fn(f_with_typed_args)
+    validate_fn()
     a + b
   }
 
@@ -61,10 +66,16 @@ test_that("validate func", {
 
   # Assert
   expect_equal(res, 7L)
+  expect_error(f(2L, 5))
 })
 
 test_that("validate data frame", {
   # Prepare
+  df_to_fail <- data.frame(
+    mpg = as.integer(mtcars$mpg),
+    cyl = mtcars$cyl
+  )
+
   my_model <- base_model(
     mpg = is.double,
     cyl = is.integer,
@@ -80,4 +91,5 @@ test_that("validate data frame", {
   expect_equal(names(df), c("mpg", "cyl"))
   expect_s3_class(df, "data.frame")
   expect_type(df$cyl, "integer")
+  expect_error(my_model(df_to_fail))
 })
