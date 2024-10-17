@@ -15,7 +15,7 @@ get_settings <- function(types, prefix = "") {
 }
 
 #' Create settings
-#' @param ... env vars and their type convertors
+#' @param ... env vars and their type converters
 #' @param .prefix prefix of env vars
 #' @return settings function
 #' @example examples/api/base-settings.R

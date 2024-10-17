@@ -2,10 +2,10 @@
 % Please edit documentation in R/base-model.R
 \name{model_dump}
 \alias{model_dump}
-\title{Modify a model object}
+\title{Modify a \code{\link[=base_model]{base_model()}} object}
 \usage{
 model_dump(
-  .obj,
+  obj,
   exclude = NULL,
   include = NULL,
   exclude_null = FALSE,
@@ -14,15 +14,15 @@ model_dump(
 )
 }
 \arguments{
-\item{.obj}{model object}
+\item{obj}{\code{\link[=base_model]{base_model()}} object}
 
 \item{exclude}{A set of fields to exclude from the output.}
 
 \item{include}{A set of fields to include in the output.}
 
-\item{exclude_null}{Whether to drop items with the value `NULL`.}
+\item{exclude_null}{Whether to drop items with the value \code{NULL}.}
 
-\item{exclude_na}{Whether to drop items with the value `NA`.}
+\item{exclude_na}{Whether to drop items with the value \code{NA}.}
 
 \item{camels}{Whether to convert all keys to camel case.}
 }
@@ -30,5 +30,18 @@ model_dump(
 list
 }
 \description{
-Modify a model object
+Modify a \code{\link[=base_model]{base_model()}} object
+}
+\examples{
+my_model <- base_model(
+  this_is_a_character = is.character,
+  this_is_an_integer = is.integer,
+  this_value_can_be_null = ~ is.integer(.x) | is.null(.x)
+)
+
+my_model(
+  this_is_a_character = "yes",
+  this_is_an_integer = 10L,
+  this_value_can_be_null = NULL
+) |> model_dump(exclude_null = TRUE, camels = TRUE)
 }

@@ -2,13 +2,26 @@
 % Please edit documentation in R/base-model.R
 \name{validate_fn}
 \alias{validate_fn}
-\title{Validate function parameters}
+\title{Validate function arguments}
 \usage{
-validate_fn(fn)
+validate_fn(fn = rlang::caller_fn())
 }
 \arguments{
-\item{fn}{function containing the arguments to be checked}
+\item{fn}{A function containing the arguments to be checked.}
+}
+\value{
+The function's \code{environment}.
 }
 \description{
-Validate function parameters
+Validate function arguments
+}
+\examples{
+f <- function(a = is.integer, b = is.integer) {
+  validate_fn()
+  a + b
+}
+
+f(2L, 5L)
+
+try(f(2, 5))
 }

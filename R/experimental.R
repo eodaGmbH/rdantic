@@ -1,0 +1,96 @@
+# ---
+model_field <- function(fn, default = NA, ...) {
+  l <- as.list(environment())
+  return(c(l, list(...)))
+}
+
+
+# ---
+model_config <- function(allow_extra = FALSE, ...) {
+  return(c(as.list(environment()), list(...)))
+}
+
+# ---
+base_model2 <- function(fields = list(), ...,
+                        .model_config = model_config(),
+                        .validators_before = list(),
+                        .validators_after = list()) {
+  fields <- utils::modifyList(fields, list(...), keep.null = TRUE)
+  fields <- purrr::map(fields, ~ {
+    if (inherits(.x, "function")) {
+      return(model_field(fn = .x))
+    }
+
+    return(.x)
+  })
+
+  model_args <- purrr::map(fields, ~ .x$default)
+
+  # Create model function
+  model_fn <- rlang::new_function(c(model_args, alist(... = , .x = NULL)), quote({
+    if (is_not_null(.x)) {
+      obj <- .x
+    } else {
+      obj <- as.list(environment())
+    }
+
+    obj <- validate_fields(obj, .validators_before)
+
+    for (name in names(fields)) {
+      check_type_fn <- rlang::as_function(fields[[name]]$fn)
+      obj_value <- obj[[name]]
+      if (isFALSE(check_type_fn(obj_value))) {
+        cli::cli_abort(
+          c(
+            x = "Type check failed.",
+            i = "{name} = {rlang::quo_text(obj_value)}",
+            i = "typeof({name}): {typeof(obj_value)}",
+            i = "length({name}): {length(obj_value)}",
+            x = rlang::quo_text(check_type_fn)
+          ),
+          .frame = rlang::caller_env()
+        )
+      }
+    }
+
+    obj <- validate_fields(obj, .validators_after)
+
+    if (is.environment(obj)) {
+      return(invisible(obj))
+    }
+
+    if (isFALSE(.model_config$allow_extra)) {
+      obj <- purrr::keep_at(obj, names(fields))
+    }
+
+    return(obj)
+  }))
+
+  return(
+    set_attributes(
+      model_fn,
+      fields = fields,
+      class = c(class(model_fn), "base_model")
+    )
+  )
+}
+
+# ---
+check_args <- function(...) {
+  fields <- list(...)
+  if (length(fields) == 0) {
+    fn <- rlang::caller_fn()
+    fmls <- rlang::fn_fmls(fn)
+    fields <- purrr::map(as.list(fmls), eval)
+  }
+
+  e <- rlang::caller_env()
+  for (name in names(e)) {
+    value <- e[[name]]
+    if (is.list(value)) {
+      e[[name]] <- value$default
+    }
+  }
+
+  base_model2(fields)(.x = e)
+}

@@ -4,17 +4,28 @@
 \alias{base_model}
 \title{Create a model}
 \usage{
-base_model(..., .validators_before = NULL, .validators_after = NULL)
+base_model(
+  fields = list(),
+  ...,
+  .validators_before = NULL,
+  .validators_after = NULL,
+  .model_config = list()
+)
 }
 \arguments{
-\item{...}{model parameters and their type-check functions}
+\item{fields}{A named list where values are functions used for the type checks.}
 
-\item{.validators_before}{list of validators that run before types are checked}
+\item{...}{Model parameters and their functions used for the type checks.
+Usually only \code{fields} or \code{...} are supplied.}
 
-\item{.validators_after}{list of validators that run after types are checked}
+\item{.validators_before}{A list of validators that run before types are checked.}
+
+\item{.validators_after}{A list of validators that run after types are checked.}
+
+\item{.model_config}{\strong{not used at the moment}}
 }
 \value{
-model function
+base model function/
 }
 \description{
 Create a model
