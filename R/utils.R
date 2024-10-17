@@ -34,13 +34,6 @@ keys_to_camel_case <- function(x, .recursive = TRUE) {
 }
 
 # ---
-
-set_attributes <- function(x, ...) {
-  attributes(x) <- c(attributes(x), list(...))
-  return(x)
-}
-
-# ---
 camels_to_snakes <- function(strings) {
   gsub(" ", "_", tolower(gsub("(.)([A-Z])", "\\1 \\2", strings)))
 }

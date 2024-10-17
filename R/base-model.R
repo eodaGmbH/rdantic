@@ -1,29 +1,4 @@
-raise_type_check_error <- function(name, value, check_type, call = rlang::caller_env()) {
-  value_text <- rlang::quo_text(value)
-  check_type_text <- ifelse(
-    rlang::is_primitive(check_type),
-    rlang::prim_name(check_type),
-    rlang::quo_text(check_type)
-  )
-  cli::cli_abort(
-    c(
-      "Type check failed.",
-      i = "field: {name}",
-      x = "value: {value_text}",
-      x = "test: {check_type_text}"
-    ),
-    call = call
-  )
-}
-
-validate_fields <- function(obj, validators) {
-  for (name in names(validators)) {
-    obj[[name]] <- rlang::as_function(validators[[name]])(obj[[name]])
-  }
-
-  return(obj)
-}
-
+# ---
 #' Create a model
 #'
 #' @param fields A named list where values are functions used for the type checks.
@@ -40,7 +15,7 @@ base_model <- function(fields = list(), ...,
                        .validators_after = NULL,
                        .model_config = list()) {
   fields <- utils::modifyList(fields, list(...), keep.null = TRUE)
-  function(obj = list(), ...) {
+  model_fn <- function(obj = list(), ...) {
     if (is.list(obj)) {
       obj <- utils::modifyList(obj, list(...), keep.null = TRUE)
     }
@@ -72,6 +47,8 @@ base_model <- function(fields = list(), ...,
     obj <- purrr::keep_at(obj, names(fields))
     return(obj)
   }
+
+  return(set_attributes(model_fn, fields = fields))
 }
 
 #' Modify a [base_model()] object
@@ -96,6 +73,10 @@ model_dump <- function(obj,
   if (exclude_na) obj <- purrr::discard(obj, is.na)
   if (camels) obj <- keys_to_camel_case(obj)
   return(obj)
+}
+
+model_fields <- function(model_obj) {
+  attr(model_obj, "fields")
 }
 
 # ---
