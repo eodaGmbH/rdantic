@@ -10,6 +10,7 @@ keys_to_camel_case_DEPRECATED <- function(x) {
   stats::setNames(x, to_camel_case(names(x)))
 }
 
+# TODO: Rename 'names_to_camels'
 #' Convert keys to camel case
 #' @param x list
 #' @param .recursive Whether to convert keys on all levels.
@@ -42,6 +43,7 @@ keys_to_snake_case_DEPRECATED <- function(x) {
   stats::setNames(x, camels_to_snakes(names(x)))
 }
 
+# TODO: Rename to 'names_to_snakes'
 #' Convert keys to snake case
 #' @param x list
 #' @param .recursive Whether to convert keys on all levels.
