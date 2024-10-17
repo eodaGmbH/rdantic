@@ -11,8 +11,9 @@ model_config <- function(allow_extra = FALSE, ...) {
 }
 
 # ---
-base_model2 <- function(..., .model_config = model_config()) {
-  fields <- purrr::map(list(...), ~ {
+base_model2 <- function(fields = list(), ..., .model_config = model_config()) {
+  fields <- utils::modifyList(fields, list(...), keep.null = TRUE)
+  fields <- purrr::map(fields, ~ {
     if (inherits(.x, "function")) {
       return(model_field(fn = .x))
     }
