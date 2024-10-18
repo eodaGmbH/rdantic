@@ -67,7 +67,7 @@ base_model2 <- function(fields = list(), ...,
       obj <- purrr::keep_at(obj, names(fields))
     }
 
-    return(obj)
+    return(structure(obj, fields = fields))
   }))
 
   return(

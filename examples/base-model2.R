@@ -52,7 +52,7 @@ my_api_model <- base_model2(
 
 external_data <- list(
   name = "PETER",
-  age = 10,
+  age = 10L,
   address = list(
     city = "KASSEL",
     country = "Germany"
