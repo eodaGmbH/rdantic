@@ -27,15 +27,20 @@ validate_fields <- function(obj, validators) {
 }
 
 # ---
+str_to_lower <- function(x) {
+  ifelse(is.character(x), tolower(x), x)
+}
+
+# ---
+# TODO: Use 'structure' instead
 set_attributes <- function(x, ...) {
   attributes(x) <- c(attributes(x), list(...))
   return(x)
 }
 
 # ---
-add_class <- function(x, cls = "base_model") {
-  class(x) <- c(class(x), cls)
-  return(x)
+set_class <- function(x, cls = "base_model") {
+  structure(x, class = c(class(x), cls))
 }
 
 # ---

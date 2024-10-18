@@ -6,7 +6,8 @@ model_field <- function(fn, default = NA, ...) {
 
 
 # ---
-model_config <- function(allow_extra = FALSE, ...) {
+model_config <- function(allow_extra = FALSE,
+                         str_to_lower = FALSE, ...) {
   return(c(as.list(environment()), list(...)))
 }
 
@@ -54,6 +55,10 @@ base_model2 <- function(fields = list(), ...,
     }
 
     obj <- validate_fields(obj, .validators_after)
+
+    if (isTRUE(.model_config$str_to_lower)) {
+      obj <- purrr::map_depth(obj, -1, str_to_lower)
+    }
 
     if (is.environment(obj)) {
       return(invisible(obj))
