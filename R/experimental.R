@@ -45,11 +45,10 @@ base_model2 <- function(fields = list(), ...,
           c(
             x = "Type check failed.",
             i = "{name} = {rlang::quo_text(obj_value)}",
-            i = "typeof({name}): {typeof(obj_value)}",
-            i = "length({name}): {length(obj_value)}",
+            i = "type: {typeof(obj_value)}",
+            i = "length: {length(obj_value)}",
             x = rlang::quo_text(check_type_fn)
-          ),
-          .frame = rlang::caller_env()
+          ) , .frame = rlang::current_env()
         )
       }
     }
@@ -98,4 +97,9 @@ check_args <- function(...) {
   }
 
   base_model2(fields)(.x = e)
+}
+
+# ---
+model_validate <- function(obj, model_fn) {
+  model_fn(.x = obj)
 }

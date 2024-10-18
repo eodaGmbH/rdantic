@@ -42,3 +42,24 @@ my_model2 <- base_model2(
   )
 )
 my_model2(.x = tibble::as_tibble(mtcars))
+
+my_api_model <- base_model2(
+  name = is.character,
+  age = is.integer,
+  address = is.list,
+  .model_config = model_config(str_to_lower = TRUE)
+)
+
+external_data <- list(
+  name = "PETER",
+  age = 10,
+  address = list(
+    city = "KASSEL",
+    country = "Germany"
+  )
+)
+
+my_api_model(.x = external_data)
+
+external_data |>
+  model_validate(my_api_model)
