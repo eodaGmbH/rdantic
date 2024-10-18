@@ -122,3 +122,9 @@ discard_all <- function(x, fn = rlang::is_na) {
 
   return(purrr::discard(x, fn))
 }
+
+# ---
+map_items <- function(x, fn) {
+  purrr::map2(names(x), x, fn) |>
+    rlang::set_names(names(x))
+}
