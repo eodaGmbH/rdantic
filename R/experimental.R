@@ -67,14 +67,14 @@ base_model2 <- function(fields = list(), ...,
       obj <- purrr::keep_at(obj, names(fields))
     }
 
-    return(structure(obj, fields = fields))
+    return(structure(obj, fields = fields, class = c("rdantic_model")))
   }))
 
   return(
-    set_attributes(
+    structure(
       model_fn,
       fields = fields,
-      class = c(class(model_fn), "base_model")
+      class = c(class(model_fn), "rdantic_base_model")
     )
   )
 }
@@ -102,4 +102,23 @@ check_args <- function(...) {
 # ---
 model_validate <- function(obj, model_fn) {
   model_fn(.x = obj)
+}
+
+# ---
+#' @export
+print.rdantic_model <- function(x, ...) {
+  print(x[seq_along(x)])
+  return(invisible(x))
+}
+
+# ---
+discard_all <- function(x, fn = rlang::is_na) {
+  for (name in names(x)) {
+    value <- x[[name]]
+    if (is.list(value)) {
+      x[[name]] <- discard_all(value, fn)
+    }
+  }
+
+  return(purrr::discard(x, fn))
 }

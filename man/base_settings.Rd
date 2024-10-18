@@ -7,7 +7,7 @@
 base_settings(..., .prefix = "")
 }
 \arguments{
-\item{...}{env vars and their type convertors}
+\item{...}{env vars and their type converters}
 
 \item{.prefix}{prefix of env vars}
 }
