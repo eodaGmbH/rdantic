@@ -45,7 +45,8 @@ base_model <- function(fields = list(), ...,
     }
 
     obj <- purrr::keep_at(obj, names(fields))
-    return(structure(obj, fields = fields))
+    # return(structure(obj, fields = fields, class = c("list")))
+    return(obj)
   }
 
   return(set_attributes(model_fn, fields = fields))
